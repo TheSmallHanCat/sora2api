@@ -44,3 +44,5 @@ custom_parse_token = ""
 
 [token_refresh]
 at_auto_refresh_enabled = false
+# RT 刷新使用的 Client ID 列表（逗号分隔，依次尝试，成功后自动绑定）
+client_ids = "app_LlGpXReQgckcGGUo2JrYvtJK,app_WXrF1LSkiTtfYqiL6XtjygvX"

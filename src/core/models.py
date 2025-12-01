@@ -36,6 +36,8 @@ class Token(BaseModel):
     # 并发限制
     image_concurrency: int = -1  # 图片并发数限制，-1表示不限制
     video_concurrency: int = -1  # 视频并发数限制，-1表示不限制
+    # 刷新配置
+    client_id: Optional[str] = None  # 记录刷新使用的 client_id
 
 class TokenStats(BaseModel):
     """Token statistics"""

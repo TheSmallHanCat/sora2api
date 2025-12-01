@@ -1,7 +1,7 @@
 """Configuration management"""
 import tomli
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 
 class Config:
     """Application configuration"""
@@ -207,6 +207,12 @@ class Config:
         if "token_refresh" not in self._config:
             self._config["token_refresh"] = {}
         self._config["token_refresh"]["at_auto_refresh_enabled"] = enabled
+
+    @property
+    def refresh_client_ids(self) -> List[str]:
+        """获取用于刷新的 client_id 列表（逗号分隔）"""
+        client_ids_str = self._config.get("token_refresh", {}).get("client_ids", "app_LlGpXReQgckcGGUo2JrYvtJK")
+        return [cid.strip() for cid in client_ids_str.split(",") if cid.strip()]
 
 # Global config instance
 config = Config()

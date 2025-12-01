@@ -248,18 +248,38 @@ async def st_to_at(request: ST2ATRequest, token: str = Depends(verify_admin_toke
 
 @router.post("/api/tokens/rt2at")
 async def rt_to_at(request: RT2ATRequest, token: str = Depends(verify_admin_token)):
-    """Convert Refresh Token to Access Token (only convert, not add to database)"""
-    try:
-        result = await token_manager.rt_to_at(request.rt)
-        return {
-            "success": True,
-            "message": "RT converted to AT successfully",
-            "access_token": result["access_token"],
-            "refresh_token": result.get("refresh_token"),
-            "expires_in": result.get("expires_in")
-        }
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    """Convert Refresh Token to Access Token (only convert, not add to database)
+    
+    支持多个 client_id 尝试，依次尝试配置中的所有 client_id，直到成功
+    """
+    from ..core.config import config
+    
+    # 获取所有可用的 client_ids
+    client_ids = config.refresh_client_ids
+    
+    last_error = None
+    
+    # 依次尝试每个 client_id
+    for client_id in client_ids:
+        try:
+            result = await token_manager.rt_to_at(request.rt, client_id)
+            return {
+                "success": True,
+                "message": f"RT converted to AT successfully using client_id: {client_id[:30]}...",
+                "access_token": result["access_token"],
+                "refresh_token": result.get("refresh_token"),
+                "expires_in": result.get("expires_in"),
+                "used_client_id": client_id
+            }
+        except Exception as e:
+            last_error = str(e)
+            continue
+    
+    # 所有 client_id 都失败
+    raise HTTPException(
+        status_code=400, 
+        detail=f"Failed to convert RT to AT with all configured client_ids. Last error: {last_error}"
+    )
 
 @router.put("/api/tokens/{token_id}/status")
 async def update_token_status(

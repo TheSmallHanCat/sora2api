@@ -495,9 +495,18 @@ class TokenManager:
                 debug_logger.log_info(f"[ST_TO_AT] 🔴 异常: {str(e)}")
                 raise
     
-    async def rt_to_at(self, refresh_token: str) -> dict:
-        """Convert Refresh Token to Access Token"""
+    async def rt_to_at(self, refresh_token: str, client_id: str = None) -> dict:
+        """Convert Refresh Token to Access Token
+        
+        Args:
+            refresh_token: Refresh token
+            client_id: Client ID to use (optional, uses config default if not provided)
+        """
+        if client_id is None:
+            client_id = config.refresh_client_ids[0]  # 使用第一个作为默认
+            
         debug_logger.log_info(f"[RT_TO_AT] 开始转换 Refresh Token 为 Access Token...")
+        debug_logger.log_info(f"[RT_TO_AT] 使用 client_id: {client_id[:30]}...")
         proxy_url = await self.proxy_manager.get_proxy_url()
 
         async with AsyncSession() as session:
@@ -509,7 +518,7 @@ class TokenManager:
             kwargs = {
                 "headers": headers,
                 "json": {
-                    "client_id": "app_LlGpXReQgckcGGUo2JrYvtJK",
+                    "client_id": client_id,
                     "grant_type": "refresh_token",
                     "redirect_uri": "com.openai.chat://auth0.openai.com/ios/com.openai.chat/callback",
                     "refresh_token": refresh_token
@@ -809,8 +818,9 @@ class TokenManager:
                           image_enabled: Optional[bool] = None,
                           video_enabled: Optional[bool] = None,
                           image_concurrency: Optional[int] = None,
-                          video_concurrency: Optional[int] = None):
-        """Update token (AT, ST, RT, remark, image_enabled, video_enabled, concurrency limits)"""
+                          video_concurrency: Optional[int] = None,
+                          client_id: Optional[str] = None):
+        """Update token (AT, ST, RT, remark, image_enabled, video_enabled, concurrency limits, client_id)"""
         # If token (AT) is updated, decode JWT to get new expiry time
         expiry_time = None
         if token:
@@ -822,7 +832,8 @@ class TokenManager:
 
         await self.db.update_token(token_id, token=token, st=st, rt=rt, remark=remark, expiry_time=expiry_time,
                                    image_enabled=image_enabled, video_enabled=video_enabled,
-                                   image_concurrency=image_concurrency, video_concurrency=video_concurrency)
+                                   image_concurrency=image_concurrency, video_concurrency=video_concurrency,
+                                   client_id=client_id)
 
     async def get_active_tokens(self) -> List[Token]:
         """Get all active tokens (not cooled down)"""
@@ -1037,11 +1048,33 @@ class TokenManager:
             if not new_at and token_data.rt:
                 try:
                     debug_logger.log_info(f"[AUTO_REFRESH] 📝 Token {token_id}: 尝试使用 RT 刷新...")
-                    result = await self.rt_to_at(token_data.rt)
-                    new_at = result.get("access_token")
-                    new_rt = result.get("refresh_token", token_data.rt)  # RT might be updated
-                    refresh_method = "RT"
-                    debug_logger.log_info(f"[AUTO_REFRESH] ✅ Token {token_id}: 使用 RT 刷新成功")
+                    
+                    # 获取所有可用的 client_ids
+                    client_ids = config.refresh_client_ids
+                    
+                    # 如果 token 已有绑定的 client_id，优先使用
+                    if token_data.client_id and token_data.client_id in client_ids:
+                        client_ids = [token_data.client_id] + [cid for cid in client_ids if cid != token_data.client_id]
+                    
+                    # 依次尝试每个 client_id
+                    for client_id in client_ids:
+                        try:
+                            debug_logger.log_info(f"[AUTO_REFRESH] 尝试 client_id: {client_id[:30]}...")
+                            result = await self.rt_to_at(token_data.rt, client_id)
+                            new_at = result.get("access_token")
+                            new_rt = result.get("refresh_token", token_data.rt)
+                            
+                            if new_at:
+                                # 刷新成功，记录这个 client_id
+                                debug_logger.log_info(f"[AUTO_REFRESH] ✅ 使用 client_id {client_id[:30]}... 刷新成功")
+                                refresh_method = f"RT (client_id: {client_id[:30]}...)"
+                                break
+                        except Exception as e:
+                            debug_logger.log_info(f"[AUTO_REFRESH] ❌ client_id {client_id[:30]}... 失败: {str(e)}")
+                            continue
+                    
+                    if not new_at:
+                        debug_logger.log_info(f"[AUTO_REFRESH] ❌ Token {token_id}: 所有 client_id 均刷新失败")
                 except Exception as e:
                     debug_logger.log_info(f"[AUTO_REFRESH] ❌ Token {token_id}: 使用 RT 刷新失败 - {str(e)}")
                     new_at = None
@@ -1050,7 +1083,11 @@ class TokenManager:
             if new_at:
                 # 刷新成功: 更新Token
                 debug_logger.log_info(f"[AUTO_REFRESH] 💾 Token {token_id}: 保存新的 Access Token...")
-                await self.update_token(token_id, token=new_at, st=new_st, rt=new_rt)
+                # 如果使用 RT 刷新成功，保存使用的 client_id
+                if refresh_method and refresh_method.startswith("RT"):
+                    await self.update_token(token_id, token=new_at, st=new_st, rt=new_rt, client_id=client_id)
+                else:
+                    await self.update_token(token_id, token=new_at, st=new_st, rt=new_rt)
 
                 # 获取更新后的Token信息
                 updated_token = await self.db.get_token(token_id)
