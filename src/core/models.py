@@ -19,24 +19,24 @@ class Token(BaseModel):
     created_at: Optional[datetime] = None
     last_used_at: Optional[datetime] = None
     use_count: int = 0
-    # 订阅信息
-    plan_type: Optional[str] = None  # 账户类型，如 chatgpt_team
-    plan_title: Optional[str] = None  # 套餐名称，如 ChatGPT Business
-    subscription_end: Optional[datetime] = None  # 套餐到期时间
-    # Sora2 支持信息
-    sora2_supported: Optional[bool] = None  # 是否支持Sora2
-    sora2_invite_code: Optional[str] = None  # Sora2邀请码
-    sora2_redeemed_count: int = 0  # Sora2已用次数
-    sora2_total_count: int = 0  # Sora2总次数
-    # Sora2 剩余次数
-    sora2_remaining_count: int = 0  # Sora2剩余可用次数
-    sora2_cooldown_until: Optional[datetime] = None  # Sora2冷却时间
-    # 功能开关
-    image_enabled: bool = True  # 是否启用图片生成
-    video_enabled: bool = True  # 是否启用视频生成
-    # 并发限制
-    image_concurrency: int = -1  # 图片并发数限制，-1表示不限制
-    video_concurrency: int = -1  # 视频并发数限制，-1表示不限制
+    # Информация о подписке
+    plan_type: Optional[str] = None  # Тип аккаунта, например chatgpt_team
+    plan_title: Optional[str] = None  # Название тарифа, например ChatGPT Business
+    subscription_end: Optional[datetime] = None  # Время истечения подписки
+    # Информация о поддержке Sora2
+    sora2_supported: Optional[bool] = None  # Поддерживается ли Sora2
+    sora2_invite_code: Optional[str] = None  # Код приглашения Sora2
+    sora2_redeemed_count: int = 0  # Количество использованных попыток Sora2
+    sora2_total_count: int = 0  # Общее количество попыток Sora2
+    # Оставшиеся попытки Sora2
+    sora2_remaining_count: int = 0  # Количество оставшихся попыток Sora2
+    sora2_cooldown_until: Optional[datetime] = None  # Время охлаждения Sora2
+    # Переключатели функций
+    image_enabled: bool = True  # Включена ли генерация изображений
+    video_enabled: bool = True  # Включена ли генерация видео
+    # Ограничение конкурентности
+    image_concurrency: int = -1  # Ограничение конкурентности изображений, -1 = без ограничений
+    video_concurrency: int = -1  # Ограничение конкурентности видео, -1 = без ограничений
 
 class TokenStats(BaseModel):
     """Token statistics"""

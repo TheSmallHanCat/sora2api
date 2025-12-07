@@ -35,18 +35,18 @@ class TokenManager:
         Returns:
             A random username string
         """
-        # 生成真实姓名
+        # Генерация реального имени
         first_name = self.fake.first_name()
         last_name = self.fake.last_name()
 
-        # 去除姓名中的空格和特殊字符，只保留字母
+        # Удаление пробелов и специальных символов, оставляем только буквы
         first_name_clean = ''.join(c for c in first_name if c.isalpha())
         last_name_clean = ''.join(c for c in last_name if c.isalpha())
 
-        # 生成1-4位随机数字
+        # Генерация 1-4 случайных цифр
         random_digits = str(random.randint(1, 9999))
 
-        # 随机选择用户名格式
+        # Случайный выбор формата имени пользователя
         format_choice = random.choice([
             f"{first_name_clean}{last_name_clean}{random_digits}",
             f"{first_name_clean}.{last_name_clean}{random_digits}",
@@ -56,7 +56,7 @@ class TokenManager:
             f"{first_name_clean}{last_name_clean[0]}{random_digits}"
         ])
 
-        # 转换为小写
+        # Преобразование в нижний регистр
         return format_choice.lower()
 
     async def get_user_info(self, access_token: str) -> dict:
@@ -74,7 +74,7 @@ class TokenManager:
             kwargs = {
                 "headers": headers,
                 "timeout": 30,
-                "impersonate": "chrome"  # 自动生成 User-Agent 和浏览器指纹
+                "impersonate": "chrome"  # Автоматическая генерация User-Agent и отпечатка браузера
             }
 
             if proxy_url:
@@ -100,7 +100,7 @@ class TokenManager:
                 "subscription_end": "2025-11-13T16:58:21Z"
             }
         """
-        print(f"🔍 开始获取订阅信息...")
+        print(f"🔍 Начало получения информации о подписке...")
         proxy_url = await self.proxy_manager.get_proxy_url()
 
         headers = {
@@ -109,27 +109,27 @@ class TokenManager:
 
         async with AsyncSession() as session:
             url = "https://sora.chatgpt.com/backend/billing/subscriptions"
-            print(f"📡 请求 URL: {url}")
-            print(f"🔑 使用 Token: {token[:30]}...")
+            print(f"📡 Запрос URL: {url}")
+            print(f"🔑 Используем Token: {token[:30]}...")0]}...")
 
             kwargs = {
                 "headers": headers,
                 "timeout": 30,
-                "impersonate": "chrome"  # 自动生成 User-Agent 和浏览器指纹
+                "impersonate": "chrome"  # Автогенерация User-Agent и отпечатка браузера
             }
 
             if proxy_url:
                 kwargs["proxy"] = proxy_url
-                print(f"🌐 使用代理: {proxy_url}")
+                print(f"🌐 Используем прокси: {proxy_url}")
 
             response = await session.get(url, **kwargs)
-            print(f"📥 响应状态码: {response.status_code}")
+            print(f"📥 Статус код ответа: {response.status_code}")
 
             if response.status_code == 200:
                 data = response.json()
-                print(f"📦 响应数据: {data}")
+                print(f"📦 Данные ответа: {data}")
 
-                # 提取第一个订阅信息
+                # Извлечение первой информации о подписке
                 if data.get("data") and len(data["data"]) > 0:
                     subscription = data["data"][0]
                     plan = subscription.get("plan", {})
@@ -139,10 +139,10 @@ class TokenManager:
                         "plan_title": plan.get("title", ""),
                         "subscription_end": subscription.get("end_ts", "")
                     }
-                    print(f"✅ 订阅信息提取成功: {result}")
+                    print(f"✅ Информация о подписке успешно извлечена: {result}")
                     return result
 
-                print(f"⚠️  响应数据中没有订阅信息")
+                print(f"⚠️  В данных ответа нет информации о подписке")та нет информации о подписке")
                 return {
                     "plan_type": "",
                     "plan_title": "",
@@ -150,14 +150,14 @@ class TokenManager:
                 }
             else:
                 print(f"❌ Failed to get subscription info: {response.status_code}")
-                print(f"📄 响应内容: {response.text}")
+                print(f"📄 Содержимое ответа: {response.text}")
 
                 # Check for token_expired error
                 try:
                     error_data = response.json()
                     error_info = error_data.get("error", {})
                     if error_info.get("code") == "token_expired":
-                        raise Exception(f"Token已过期: {error_info.get('message', 'Token expired')}")
+                        raise Exception(f"Token истёк: {error_info.get('message', 'Token expired')}")
                 except ValueError:
                     pass
 
@@ -167,7 +167,7 @@ class TokenManager:
         """Get Sora2 invite code"""
         proxy_url = await self.proxy_manager.get_proxy_url()
 
-        print(f"🔍 开始获取Sora2邀请码...")
+        print(f"🔍 Начало получения кода приглашения Sora2...")
 
         async with AsyncSession() as session:
             headers = {
@@ -178,23 +178,23 @@ class TokenManager:
             kwargs = {
                 "headers": headers,
                 "timeout": 30,
-                "impersonate": "chrome"  # 自动生成 User-Agent 和浏览器指纹
+                "impersonate": "chrome"  # Автоматическая генерация User-Agent и отпечатка браузера
             }
 
             if proxy_url:
                 kwargs["proxy"] = proxy_url
-                print(f"🌐 使用代理: {proxy_url}")
+                print(f"🌐 Используется прокси: {proxy_url}")
 
             response = await session.get(
                 "https://sora.chatgpt.com/backend/project_y/invite/mine",
                 **kwargs
             )
 
-            print(f"📥 响应状态码: {response.status_code}")
+            print(f"📥 Статус код ответа: {response.status_code}")
 
             if response.status_code == 200:
                 data = response.json()
-                print(f"✅ Sora2邀请码获取成功: {data}")
+                print(f"✅ Код приглашения Sora2 успешно получен: {data}")
                 return {
                     "supported": True,
                     "invite_code": data.get("invite_code"),
@@ -202,8 +202,8 @@ class TokenManager:
                     "total_count": data.get("total_count", 0)
                 }
             else:
-                print(f"❌ 获取Sora2邀请码失败: {response.status_code}")
-                print(f"📄 响应内容: {response.text}")
+                print(f"❌ Не удалось получить код приглашения Sora2: {response.status_code}")
+                print(f"📄 Содержимое ответа: {response.text}")
 
                 # Check for specific errors
                 try:
@@ -212,12 +212,12 @@ class TokenManager:
 
                     # Check for unsupported_country_code
                     if error_info.get("code") == "unsupported_country_code":
-                        country = error_info.get("param", "未知")
-                        raise Exception(f"Sora在您的国家/地区不可用 ({country}): {error_info.get('message', '')}")
+                        country = error_info.get("param", "неизвестно")
+                        raise Exception(f"Sora недоступна в вашей стране ({country}): {error_info.get('message', '')}")
 
                     # Check if it's 401 unauthorized (token doesn't support Sora2)
                     if response.status_code == 401 and "Unauthorized" in error_info.get("message", ""):
-                        print(f"⚠️  Token不支持Sora2，尝试激活...")
+                        print(f"⚠️  Token не поддерживает Sora2, попытка активации...")ora2, попытка активации...")
 
                         # Try to activate Sora2
                         try:
@@ -227,7 +227,7 @@ class TokenManager:
                             )
 
                             if activate_response.status_code == 200:
-                                print(f"✅ Sora2激活请求成功，重新获取邀请码...")
+                                print(f"✅ Запрос активации Sora2 успешен, повторное получение кода приглашения...")
 
                                 # Retry getting invite code
                                 retry_response = await session.get(
@@ -237,7 +237,7 @@ class TokenManager:
 
                                 if retry_response.status_code == 200:
                                     retry_data = retry_response.json()
-                                    print(f"✅ Sora2激活成功！邀请码: {retry_data}")
+                                    print(f"✅ Sora2 успешно активирована! Код приглашения: {retry_data}")
                                     return {
                                         "supported": True,
                                         "invite_code": retry_data.get("invite_code"),
@@ -245,11 +245,11 @@ class TokenManager:
                                         "total_count": retry_data.get("total_count", 0)
                                     }
                                 else:
-                                    print(f"⚠️  激活后仍无法获取邀请码: {retry_response.status_code}")
+                                    print(f"⚠️  После активации не удалось получить код приглашения: {retry_response.status_code}")
                             else:
-                                print(f"⚠️  Sora2激活失败: {activate_response.status_code}")
+                                print(f"⚠️  Не удалось активировать Sora2: {activate_response.status_code}")
                         except Exception as activate_e:
-                            print(f"⚠️  Sora2激活过程出错: {activate_e}")
+                            print(f"⚠️  Ошибка при активации Sora2: {activate_e}")
 
                         return {
                             "supported": False,
@@ -275,7 +275,7 @@ class TokenManager:
         """
         proxy_url = await self.proxy_manager.get_proxy_url()
 
-        print(f"🔍 开始获取Sora2剩余次数...")
+        print(f"🔍 Начало получения оставшегося количества Sora2...")
 
         async with AsyncSession() as session:
             headers = {
@@ -286,23 +286,23 @@ class TokenManager:
             kwargs = {
                 "headers": headers,
                 "timeout": 30,
-                "impersonate": "chrome"  # 自动生成 User-Agent 和浏览器指纹
+                "impersonate": "chrome"  # Автоматическая генерация User-Agent и отпечатка браузера
             }
 
             if proxy_url:
                 kwargs["proxy"] = proxy_url
-                print(f"🌐 使用代理: {proxy_url}")
+                print(f"🌐 Используется прокси: {proxy_url}")
 
             response = await session.get(
                 "https://sora.chatgpt.com/backend/nf/check",
                 **kwargs
             )
 
-            print(f"📥 响应状态码: {response.status_code}")
+            print(f"📥 Статус-код ответа: {response.status_code}")
 
             if response.status_code == 200:
                 data = response.json()
-                print(f"✅ Sora2剩余次数获取成功: {data}")
+                print(f"✅ Количество оставшихся попыток Sora2 успешно получено: {data}")
 
                 rate_limit_info = data.get("rate_limit_and_credit_balance", {})
                 return {
@@ -312,8 +312,8 @@ class TokenManager:
                     "access_resets_in_seconds": rate_limit_info.get("access_resets_in_seconds", 0)
                 }
             else:
-                print(f"❌ 获取Sora2剩余次数失败: {response.status_code}")
-                print(f"📄 响应内容: {response.text[:500]}")
+                print(f"❌ Не удалось получить количество оставшихся попыток Sora2: {response.status_code}")
+                print(f"📄 Содержимое ответа: {response.text[:500]}")
                 return {
                     "success": False,
                     "remaining_count": 0,
@@ -332,7 +332,7 @@ class TokenManager:
         """
         proxy_url = await self.proxy_manager.get_proxy_url()
 
-        print(f"🔍 检查用户名是否可用: {username}")
+        print(f"🔍 Проверка доступности имени пользователя: {username}")
 
         async with AsyncSession() as session:
             headers = {
@@ -349,23 +349,23 @@ class TokenManager:
 
             if proxy_url:
                 kwargs["proxy"] = proxy_url
-                print(f"🌐 使用代理: {proxy_url}")
+                print(f"🌐 Используется прокси: {proxy_url}")
 
             response = await session.post(
                 "https://sora.chatgpt.com/backend/project_y/profile/username/check",
                 **kwargs
             )
 
-            print(f"📥 响应状态码: {response.status_code}")
+            print(f"📥 Статус-код ответа: {response.status_code}")
 
             if response.status_code == 200:
                 data = response.json()
                 available = data.get("available", False)
-                print(f"✅ 用户名检查结果: available={available}")
+                print(f"✅ Результат проверки имени пользователя: available={available}")
                 return available
             else:
-                print(f"❌ 用户名检查失败: {response.status_code}")
-                print(f"📄 响应内容: {response.text[:500]}")
+                print(f"❌ Проверка имени пользователя не удалась: {response.status_code}")
+                print(f"📄 Содержимое ответа: {response.text[:500]}")
                 return False
 
     async def set_username(self, access_token: str, username: str) -> dict:
@@ -380,7 +380,7 @@ class TokenManager:
         """
         proxy_url = await self.proxy_manager.get_proxy_url()
 
-        print(f"🔍 开始设置用户名: {username}")
+        print(f"🔍 Начало установки имени пользователя: {username}")
 
         async with AsyncSession() as session:
             headers = {
@@ -397,22 +397,22 @@ class TokenManager:
 
             if proxy_url:
                 kwargs["proxy"] = proxy_url
-                print(f"🌐 使用代理: {proxy_url}")
+                print(f"🌐 Используется прокси: {proxy_url}")
 
             response = await session.post(
                 "https://sora.chatgpt.com/backend/project_y/profile/username/set",
                 **kwargs
             )
 
-            print(f"📥 响应状态码: {response.status_code}")
+            print(f"📥 Статус-код ответа: {response.status_code}")
 
             if response.status_code == 200:
                 data = response.json()
-                print(f"✅ 用户名设置成功: {data.get('username')}")
+                print(f"✅ Имя пользователя успешно установлено: {data.get('username')}")
                 return data
             else:
-                print(f"❌ 用户名设置失败: {response.status_code}")
-                print(f"📄 响应内容: {response.text[:500]}")
+                print(f"❌ Не удалось установить имя пользователя: {response.status_code}")
+                print(f"📄 Содержимое ответа: {response.text[:500]}")
                 raise Exception(f"Failed to set username: {response.status_code}")
 
     async def activate_sora2_invite(self, access_token: str, invite_code: str) -> dict:
@@ -420,55 +420,55 @@ class TokenManager:
         import uuid
         proxy_url = await self.proxy_manager.get_proxy_url()
 
-        print(f"🔍 开始激活Sora2邀请码: {invite_code}")
-        print(f"🔑 Access Token 前缀: {access_token[:50]}...")
+        print(f"🔍 Начало активации кода приглашения Sora2: {invite_code}")
+        print(f"🔑 Префикс Access Token: {access_token[:50]}...")
 
         async with AsyncSession() as session:
-            # 生成设备ID
+            # Генерация ID устройства
             device_id = str(uuid.uuid4())
 
-            # 只设置必要的头，让 impersonate 处理其他
+            # Устанавливаем только необходимые заголовки, пусть impersonate обработает остальное
             headers = {
                 "authorization": f"Bearer {access_token}",
                 "cookie": f"oai-did={device_id}"
             }
 
-            print(f"🆔 设备ID: {device_id}")
-            print(f"📦 请求体: {{'invite_code': '{invite_code}'}}")
+            print(f"🆔 ID устройства: {device_id}")
+            print(f"📦 Тело запроса: {{'invite_code': '{invite_code}'}}")
 
             kwargs = {
                 "headers": headers,
                 "json": {"invite_code": invite_code},
                 "timeout": 30,
-                "impersonate": "chrome120"  # 使用 chrome120 让库自动处理 UA 等头
+                "impersonate": "chrome120"  # Используем chrome120 для автоматической обработки UA и других заголовков
             }
 
             if proxy_url:
                 kwargs["proxy"] = proxy_url
-                print(f"🌐 使用代理: {proxy_url}")
+                print(f"🌐 Используется прокси: {proxy_url}")
 
             response = await session.post(
                 "https://sora.chatgpt.com/backend/project_y/invite/accept",
                 **kwargs
             )
 
-            print(f"📥 响应状态码: {response.status_code}")
+            print(f"📥 Статус-код ответа: {response.status_code}")
 
             if response.status_code == 200:
                 data = response.json()
-                print(f"✅ Sora2激活成功: {data}")
+                print(f"✅ Sora2 успешно активирована: {data}")
                 return {
                     "success": data.get("success", False),
                     "already_accepted": data.get("already_accepted", False)
                 }
             else:
-                print(f"❌ Sora2激活失败: {response.status_code}")
-                print(f"📄 响应内容: {response.text[:500]}")
+                print(f"❌ Активация Sora2 не удалась: {response.status_code}")
+                print(f"📄 Содержимое ответа: {response.text[:500]}")
                 raise Exception(f"Failed to activate Sora2: {response.status_code}")
 
     async def st_to_at(self, session_token: str) -> dict:
         """Convert Session Token to Access Token"""
-        debug_logger.log_info(f"[ST_TO_AT] 开始转换 Session Token 为 Access Token...")
+        debug_logger.log_info(f"[ST_TO_AT] Начало конвертации Session Token в Access Token...")
         proxy_url = await self.proxy_manager.get_proxy_url()
 
         async with AsyncSession() as session:
@@ -482,60 +482,60 @@ class TokenManager:
             kwargs = {
                 "headers": headers,
                 "timeout": 30,
-                "impersonate": "chrome"  # 自动生成 User-Agent 和浏览器指纹
+                "impersonate": "chrome"  # Автоматическая генерация User-Agent и отпечатка браузера
             }
 
             if proxy_url:
                 kwargs["proxy"] = proxy_url
-                debug_logger.log_info(f"[ST_TO_AT] 使用代理: {proxy_url}")
+                debug_logger.log_info(f"[ST_TO_AT] Используется прокси: {proxy_url}")
 
             url = "https://sora.chatgpt.com/api/auth/session"
-            debug_logger.log_info(f"[ST_TO_AT] 📡 请求 URL: {url}")
+            debug_logger.log_info(f"[ST_TO_AT] 📡 URL запроса: {url}")
 
             try:
                 response = await session.get(url, **kwargs)
-                debug_logger.log_info(f"[ST_TO_AT] 📥 响应状态码: {response.status_code}")
+                debug_logger.log_info(f"[ST_TO_AT] 📥 Статус-код ответа: {response.status_code}")
 
                 if response.status_code != 200:
                     error_msg = f"Failed to convert ST to AT: {response.status_code}"
                     debug_logger.log_info(f"[ST_TO_AT] ❌ {error_msg}")
-                    debug_logger.log_info(f"[ST_TO_AT] 响应内容: {response.text[:500]}")
+                    debug_logger.log_info(f"[ST_TO_AT] Содержимое ответа: {response.text[:500]}")
                     raise ValueError(error_msg)
 
-                # 获取响应文本用于调试
+                # Получаем текст ответа для отладки
                 response_text = response.text
-                debug_logger.log_info(f"[ST_TO_AT] 📄 响应内容: {response_text[:500]}")
+                debug_logger.log_info(f"[ST_TO_AT] 📄 Содержимое ответа: {response_text[:500]}")
 
-                # 检查响应是否为空
+                # Проверяем, не пустой ли ответ
                 if not response_text or response_text.strip() == "":
-                    debug_logger.log_info(f"[ST_TO_AT] ❌ 响应体为空")
+                    debug_logger.log_info(f"[ST_TO_AT] ❌ Пустое тело ответа")
                     raise ValueError("Response body is empty")
 
                 try:
                     data = response.json()
                 except Exception as json_err:
-                    debug_logger.log_info(f"[ST_TO_AT] ❌ JSON解析失败: {str(json_err)}")
-                    debug_logger.log_info(f"[ST_TO_AT] 原始响应: {response_text[:1000]}")
+                    debug_logger.log_info(f"[ST_TO_AT] ❌ Ошибка парсинга JSON: {str(json_err)}")
+                    debug_logger.log_info(f"[ST_TO_AT] Исходный ответ: {response_text[:1000]}")
                     raise ValueError(f"Failed to parse JSON response: {str(json_err)}")
 
-                # 检查data是否为None
+                # Проверяем, не равен ли data None
                 if data is None:
-                    debug_logger.log_info(f"[ST_TO_AT] ❌ 响应JSON为空")
+                    debug_logger.log_info(f"[ST_TO_AT] ❌ Пустой JSON в ответе")
                     raise ValueError("Response JSON is empty")
 
                 access_token = data.get("accessToken")
                 email = data.get("user", {}).get("email") if data.get("user") else None
                 expires = data.get("expires")
 
-                # 检查必要字段
+                # Проверяем обязательные поля
                 if not access_token:
-                    debug_logger.log_info(f"[ST_TO_AT] ❌ 响应中缺少 accessToken 字段")
-                    debug_logger.log_info(f"[ST_TO_AT] 响应数据: {data}")
+                    debug_logger.log_info(f"[ST_TO_AT] ❌ В ответе отсутствует поле accessToken")
+                    debug_logger.log_info(f"[ST_TO_AT] Данные ответа: {data}")
                     raise ValueError("Missing accessToken in response")
 
-                debug_logger.log_info(f"[ST_TO_AT] ✅ ST 转换成功")
+                debug_logger.log_info(f"[ST_TO_AT] ✅ Конвертация ST успешна")
                 debug_logger.log_info(f"  - Email: {email}")
-                debug_logger.log_info(f"  - 过期时间: {expires}")
+                debug_logger.log_info(f"  - Время истечения: {expires}")
 
                 return {
                     "access_token": access_token,
@@ -543,7 +543,7 @@ class TokenManager:
                     "expires": expires
                 }
             except Exception as e:
-                debug_logger.log_info(f"[ST_TO_AT] 🔴 异常: {str(e)}")
+                debug_logger.log_info(f"[ST_TO_AT] 🔴 Исключение: {str(e)}")
                 raise
     
     async def rt_to_at(self, refresh_token: str, client_id: Optional[str] = None) -> dict:
@@ -556,8 +556,8 @@ class TokenManager:
         # Use provided client_id or default
         effective_client_id = client_id or "app_LlGpXReQgckcGGUo2JrYvtJK"
 
-        debug_logger.log_info(f"[RT_TO_AT] 开始转换 Refresh Token 为 Access Token...")
-        debug_logger.log_info(f"[RT_TO_AT] 使用 Client ID: {effective_client_id[:20]}...")
+        debug_logger.log_info(f"[RT_TO_AT] Начало конвертации Refresh Token в Access Token...")
+        debug_logger.log_info(f"[RT_TO_AT] Используется Client ID: {effective_client_id[:20]}...")
         proxy_url = await self.proxy_manager.get_proxy_url()
 
         async with AsyncSession() as session:
@@ -575,60 +575,60 @@ class TokenManager:
                     "refresh_token": refresh_token
                 },
                 "timeout": 30,
-                "impersonate": "chrome"  # 自动生成 User-Agent 和浏览器指纹
+                "impersonate": "chrome"  # Автоматическая генерация User-Agent и отпечатка браузера
             }
 
             if proxy_url:
                 kwargs["proxy"] = proxy_url
-                debug_logger.log_info(f"[RT_TO_AT] 使用代理: {proxy_url}")
+                debug_logger.log_info(f"[RT_TO_AT] Используется прокси: {proxy_url}")
 
             url = "https://auth.openai.com/oauth/token"
-            debug_logger.log_info(f"[RT_TO_AT] 📡 请求 URL: {url}")
+            debug_logger.log_info(f"[RT_TO_AT] 📡 URL запроса: {url}")
 
             try:
                 response = await session.post(url, **kwargs)
-                debug_logger.log_info(f"[RT_TO_AT] 📥 响应状态码: {response.status_code}")
+                debug_logger.log_info(f"[RT_TO_AT] 📥 Статус-код ответа: {response.status_code}")
 
                 if response.status_code != 200:
                     error_msg = f"Failed to convert RT to AT: {response.status_code}"
                     debug_logger.log_info(f"[RT_TO_AT] ❌ {error_msg}")
-                    debug_logger.log_info(f"[RT_TO_AT] 响应内容: {response.text[:500]}")
+                    debug_logger.log_info(f"[RT_TO_AT] Содержимое ответа: {response.text[:500]}")
                     raise ValueError(f"{error_msg} - {response.text}")
 
-                # 获取响应文本用于调试
+                # Получаем текст ответа для отладки
                 response_text = response.text
-                debug_logger.log_info(f"[RT_TO_AT] 📄 响应内容: {response_text[:500]}")
+                debug_logger.log_info(f"[RT_TO_AT] 📄 Содержимое ответа: {response_text[:500]}")
 
-                # 检查响应是否为空
+                # Проверяем, не пустой ли ответ
                 if not response_text or response_text.strip() == "":
-                    debug_logger.log_info(f"[RT_TO_AT] ❌ 响应体为空")
+                    debug_logger.log_info(f"[RT_TO_AT] ❌ Пустое тело ответа")
                     raise ValueError("Response body is empty")
 
                 try:
                     data = response.json()
                 except Exception as json_err:
-                    debug_logger.log_info(f"[RT_TO_AT] ❌ JSON解析失败: {str(json_err)}")
-                    debug_logger.log_info(f"[RT_TO_AT] 原始响应: {response_text[:1000]}")
+                    debug_logger.log_info(f"[RT_TO_AT] ❌ Ошибка парсинга JSON: {str(json_err)}")
+                    debug_logger.log_info(f"[RT_TO_AT] Исходный ответ: {response_text[:1000]}")
                     raise ValueError(f"Failed to parse JSON response: {str(json_err)}")
 
-                # 检查data是否为None
+                # Проверяем, не равен ли data None
                 if data is None:
-                    debug_logger.log_info(f"[RT_TO_AT] ❌ 响应JSON为空")
+                    debug_logger.log_info(f"[RT_TO_AT] ❌ Пустой JSON в ответе")
                     raise ValueError("Response JSON is empty")
 
                 access_token = data.get("access_token")
                 new_refresh_token = data.get("refresh_token")
                 expires_in = data.get("expires_in")
 
-                # 检查必要字段
+                # Проверяем обязательные поля
                 if not access_token:
-                    debug_logger.log_info(f"[RT_TO_AT] ❌ 响应中缺少 access_token 字段")
-                    debug_logger.log_info(f"[RT_TO_AT] 响应数据: {data}")
+                    debug_logger.log_info(f"[RT_TO_AT] ❌ В ответе отсутствует поле access_token")
+                    debug_logger.log_info(f"[RT_TO_AT] Данные ответа: {data}")
                     raise ValueError("Missing access_token in response")
 
-                debug_logger.log_info(f"[RT_TO_AT] ✅ RT 转换成功")
-                debug_logger.log_info(f"  - 新 Access Token 有效期: {expires_in} 秒")
-                debug_logger.log_info(f"  - Refresh Token 已更新: {'是' if new_refresh_token else '否'}")
+                debug_logger.log_info(f"[RT_TO_AT] ✅ Конвертация RT успешна")
+                debug_logger.log_info(f"  - Срок действия нового Access Token: {expires_in} секунд")
+                debug_logger.log_info(f"  - Refresh Token обновлён: {'да' if new_refresh_token else 'нет'}")
 
                 return {
                     "access_token": access_token,
@@ -636,7 +636,7 @@ class TokenManager:
                     "expires_in": expires_in
                 }
             except Exception as e:
-                debug_logger.log_info(f"[RT_TO_AT] 🔴 异常: {str(e)}")
+                debug_logger.log_info(f"[RT_TO_AT] 🔴 Исключение: {str(e)}")
                 raise
     
     async def add_token(self, token_value: str,
@@ -673,7 +673,7 @@ class TokenManager:
         existing_token = await self.db.get_token_by_value(token_value)
         if existing_token:
             if not update_if_exists:
-                raise ValueError(f"Token 已存在（邮箱: {existing_token.email}）。如需更新，请先删除旧 Token 或使用更新功能。")
+                raise ValueError(f"Token уже существует (email: {existing_token.email}). Для обновления сначала удалите старый Token или используйте функцию обновления.")
             # Update existing token
             return await self.update_existing_token(existing_token.id, token_value, st, rt, remark)
 
@@ -713,7 +713,7 @@ class TokenManager:
         except Exception as e:
             error_msg = str(e)
             # Re-raise if it's a critical error (token expired)
-            if "Token已过期" in error_msg:
+            if "Token истёк" in error_msg:
                 raise
             # If API call fails, subscription info will be None
             print(f"Failed to get subscription info: {e}")
@@ -737,13 +737,13 @@ class TokenManager:
                     remaining_info = await self.get_sora2_remaining_count(token_value)
                     if remaining_info.get("success"):
                         sora2_remaining_count = remaining_info.get("remaining_count", 0)
-                        print(f"✅ Sora2剩余次数: {sora2_remaining_count}")
+                        print(f"✅ Количество оставшихся попыток Sora2: {sora2_remaining_count}")
                 except Exception as e:
                     print(f"Failed to get Sora2 remaining count: {e}")
         except Exception as e:
             error_msg = str(e)
             # Re-raise if it's a critical error (unsupported country)
-            if "Sora在您的国家/地区不可用" in error_msg:
+            if "Sora недоступна в вашей стране" in error_msg:
                 raise
             # If API call fails, Sora2 info will be None
             print(f"Failed to get Sora2 info: {e}")
@@ -756,33 +756,33 @@ class TokenManager:
 
             # If username is null, need to set one
             if username is None:
-                print(f"⚠️  检测到用户名为null，需要设置用户名")
+                print(f"⚠️  Обнаружено пустое имя пользователя, требуется установка")
 
                 # Generate random username
                 max_attempts = 5
                 for attempt in range(max_attempts):
                     generated_username = self._generate_random_username()
-                    print(f"🔄 尝试用户名 ({attempt + 1}/{max_attempts}): {generated_username}")
+                    print(f"🔄 Попытка имени пользователя ({attempt + 1}/{max_attempts}): {generated_username}")
 
                     # Check if username is available
                     if await self.check_username_available(token_value, generated_username):
                         # Set the username
                         try:
                             await self.set_username(token_value, generated_username)
-                            print(f"✅ 用户名设置成功: {generated_username}")
+                            print(f"✅ Имя пользователя успешно установлено: {generated_username}")
                             break
                         except Exception as e:
-                            print(f"❌ 用户名设置失败: {e}")
+                            print(f"❌ Не удалось установить имя пользователя: {e}")
                             if attempt == max_attempts - 1:
-                                print(f"⚠️  达到最大尝试次数，跳过用户名设置")
+                                print(f"⚠️  Достигнуто максимальное количество попыток, пропуск установки имени")
                     else:
-                        print(f"⚠️  用户名 {generated_username} 已被占用，尝试下一个")
+                        print(f"⚠️  Имя пользователя {generated_username} уже занято, пробуем следующее")
                         if attempt == max_attempts - 1:
-                            print(f"⚠️  达到最大尝试次数，跳过用户名设置")
+                            print(f"⚠️  Достигнуто максимальное количество попыток, пропуск установки имени")
             else:
-                print(f"✅ 用户名已设置: {username}")
+                print(f"✅ Имя пользователя уже установлено: {username}")
         except Exception as e:
-            print(f"⚠️  用户名检查/设置过程中出错: {e}")
+            print(f"⚠️  Ошибка при проверке/установке имени пользователя: {e}")
 
         # Create token object
         token = Token(
@@ -1006,7 +1006,7 @@ class TokenManager:
                     if remaining_info.get("success"):
                         remaining_count = remaining_info.get("remaining_count", 0)
                         await self.db.update_token_sora2_remaining(token_id, remaining_count)
-                        print(f"✅ 更新Token {token_id} 的Sora2剩余次数: {remaining_count}")
+                        print(f"✅ Обновлено количество оставшихся попыток Sora2 для Token {token_id}: {remaining_count}")
 
                         # If remaining count is 0, set cooldown
                         if remaining_count == 0:
@@ -1014,7 +1014,7 @@ class TokenManager:
                             if reset_seconds > 0:
                                 cooldown_until = datetime.now() + timedelta(seconds=reset_seconds)
                                 await self.db.update_token_sora2_cooldown(token_id, cooldown_until)
-                                print(f"⏱️ Token {token_id} 剩余次数为0，设置冷却时间至: {cooldown_until}")
+                                print(f"⏱️ Token {token_id}: осталось 0 попыток, время охлаждения установлено до: {cooldown_until}")
             except Exception as e:
                 print(f"Failed to update Sora2 remaining count: {e}")
     
@@ -1027,7 +1027,7 @@ class TokenManager:
 
             # Check if Sora2 cooldown has expired
             if token_data.sora2_cooldown_until and token_data.sora2_cooldown_until <= datetime.now():
-                print(f"🔄 Token {token_id} Sora2冷却已过期，正在刷新剩余次数...")
+                print(f"🔄 Token {token_id}: охлаждение Sora2 истекло, обновляем количество оставшихся попыток...")
 
                 try:
                     remaining_info = await self.get_sora2_remaining_count(token_data.token)
@@ -1036,7 +1036,7 @@ class TokenManager:
                         await self.db.update_token_sora2_remaining(token_id, remaining_count)
                         # Clear cooldown
                         await self.db.update_token_sora2_cooldown(token_id, None)
-                        print(f"✅ Token {token_id} Sora2剩余次数已刷新: {remaining_count}")
+                        print(f"✅ Token {token_id}: количество оставшихся попыток Sora2 обновлено: {remaining_count}")
                 except Exception as e:
                     print(f"Failed to refresh Sora2 remaining count: {e}")
         except Exception as e:
@@ -1050,41 +1050,41 @@ class TokenManager:
             True if refresh successful, False otherwise
         """
         try:
-            # 📍 Step 1: 获取Token数据
-            debug_logger.log_info(f"[AUTO_REFRESH] 开始检查Token {token_id}...")
+            # 📍 Step 1: Получение данных Token
+            debug_logger.log_info(f"[AUTO_REFRESH] Начало проверки Token {token_id}...")
             token_data = await self.db.get_token(token_id)
 
             if not token_data:
-                debug_logger.log_info(f"[AUTO_REFRESH] ❌ Token {token_id} 不存在")
+                debug_logger.log_info(f"[AUTO_REFRESH] ❌ Token {token_id} не существует")
                 return False
 
-            # 📍 Step 2: 检查是否有过期时间
+            # 📍 Step 2: Проверка наличия времени истечения
             if not token_data.expiry_time:
-                debug_logger.log_info(f"[AUTO_REFRESH] ⏭️  Token {token_id} 无过期时间，跳过刷新")
+                debug_logger.log_info(f"[AUTO_REFRESH] ⏭️  Token {token_id} без времени истечения, пропускаем обновление")
                 return False  # No expiry time set
 
-            # 📍 Step 3: 计算剩余时间
+            # 📍 Step 3: Расчёт оставшегося времени
             time_until_expiry = token_data.expiry_time - datetime.now()
             hours_until_expiry = time_until_expiry.total_seconds() / 3600
 
-            debug_logger.log_info(f"[AUTO_REFRESH] ⏰ Token {token_id} 信息:")
+            debug_logger.log_info(f"[AUTO_REFRESH] ⏰ Token {token_id} информация:")
             debug_logger.log_info(f"  - Email: {token_data.email}")
-            debug_logger.log_info(f"  - 过期时间: {token_data.expiry_time.strftime('%Y-%m-%d %H:%M:%S')}")
-            debug_logger.log_info(f"  - 剩余时间: {hours_until_expiry:.2f} 小时")
-            debug_logger.log_info(f"  - 是否激活: {token_data.is_active}")
-            debug_logger.log_info(f"  - 有ST: {'是' if token_data.st else '否'}")
-            debug_logger.log_info(f"  - 有RT: {'是' if token_data.rt else '否'}")
+            debug_logger.log_info(f"  - Время истечения: {token_data.expiry_time.strftime('%Y-%m-%d %H:%M:%S')}")
+            debug_logger.log_info(f"  - Оставшееся время: {hours_until_expiry:.2f} часов")
+            debug_logger.log_info(f"  - Активен: {token_data.is_active}")
+            debug_logger.log_info(f"  - Есть ST: {'да' if token_data.st else 'нет'}")
+            debug_logger.log_info(f"  - Есть RT: {'да' if token_data.rt else 'нет'}")
 
-            # 📍 Step 4: 检查是否需要刷新
+            # 📍 Step 4: Проверка необходимости обновления
             if hours_until_expiry > 24:
-                debug_logger.log_info(f"[AUTO_REFRESH] ⏭️  Token {token_id} 剩余时间 > 24小时，无需刷新")
+                debug_logger.log_info(f"[AUTO_REFRESH] ⏭️  Token {token_id} оставшееся время > 24 часов, обновление не требуется")
                 return False  # Token not expiring soon
 
-            # 📍 Step 5: 触发刷新
+            # 📍 Step 5: Запуск обновления
             if hours_until_expiry < 0:
-                debug_logger.log_info(f"[AUTO_REFRESH] 🔴 Token {token_id} 已过期，尝试自动刷新...")
+                debug_logger.log_info(f"[AUTO_REFRESH] 🔴 Token {token_id} истёк, попытка автообновления...")
             else:
-                debug_logger.log_info(f"[AUTO_REFRESH] 🟡 Token {token_id} 将在 {hours_until_expiry:.2f} 小时后过期，尝试自动刷新...")
+                debug_logger.log_info(f"[AUTO_REFRESH] 🟡 Token {token_id} истечёт через {hours_until_expiry:.2f} часов, попытка автообновления...")
 
             # Priority: ST > RT
             new_at = None
@@ -1092,62 +1092,62 @@ class TokenManager:
             new_rt = None
             refresh_method = None
 
-            # 📍 Step 6: 尝试使用ST刷新
+            # 📍 Step 6: Попытка обновления через ST
             if token_data.st:
                 try:
-                    debug_logger.log_info(f"[AUTO_REFRESH] 📝 Token {token_id}: 尝试使用 ST 刷新...")
+                    debug_logger.log_info(f"[AUTO_REFRESH] 📝 Token {token_id}: попытка обновления через ST...")
                     result = await self.st_to_at(token_data.st)
                     new_at = result.get("access_token")
                     new_st = token_data.st  # ST refresh doesn't return new ST, so keep the old one
                     refresh_method = "ST"
-                    debug_logger.log_info(f"[AUTO_REFRESH] ✅ Token {token_id}: 使用 ST 刷新成功")
+                    debug_logger.log_info(f"[AUTO_REFRESH] ✅ Token {token_id}: обновление через ST успешно")
                 except Exception as e:
-                    debug_logger.log_info(f"[AUTO_REFRESH] ❌ Token {token_id}: 使用 ST 刷新失败 - {str(e)}")
+                    debug_logger.log_info(f"[AUTO_REFRESH] ❌ Token {token_id}: обновление через ST не удалось - {str(e)}")
                     new_at = None
 
-            # 📍 Step 7: 如果ST失败，尝试使用RT
+            # 📍 Step 7: Если ST не удалось, попытка RT
             if not new_at and token_data.rt:
                 try:
-                    debug_logger.log_info(f"[AUTO_REFRESH] 📝 Token {token_id}: 尝试使用 RT 刷新...")
+                    debug_logger.log_info(f"[AUTO_REFRESH] 📝 Token {token_id}: попытка обновления через RT...")
                     result = await self.rt_to_at(token_data.rt, client_id=token_data.client_id)
                     new_at = result.get("access_token")
                     new_rt = result.get("refresh_token", token_data.rt)  # RT might be updated
                     refresh_method = "RT"
-                    debug_logger.log_info(f"[AUTO_REFRESH] ✅ Token {token_id}: 使用 RT 刷新成功")
+                    debug_logger.log_info(f"[AUTO_REFRESH] ✅ Token {token_id}: обновление через RT успешно")
                 except Exception as e:
-                    debug_logger.log_info(f"[AUTO_REFRESH] ❌ Token {token_id}: 使用 RT 刷新失败 - {str(e)}")
+                    debug_logger.log_info(f"[AUTO_REFRESH] ❌ Token {token_id}: обновление через RT не удалось - {str(e)}")
                     new_at = None
 
-            # 📍 Step 8: 处理刷新结果
+            # 📍 Step 8: Обработка результата обновления
             if new_at:
-                # 刷新成功: 更新Token
-                debug_logger.log_info(f"[AUTO_REFRESH] 💾 Token {token_id}: 保存新的 Access Token...")
+                # Обновление успешно: обновляем Token
+                debug_logger.log_info(f"[AUTO_REFRESH] 💾 Token {token_id}: сохранение нового Access Token...")
                 await self.update_token(token_id, token=new_at, st=new_st, rt=new_rt)
 
-                # 获取更新后的Token信息
+                # Получение обновлённой информации о Token
                 updated_token = await self.db.get_token(token_id)
                 new_expiry_time = updated_token.expiry_time
                 new_hours_until_expiry = ((new_expiry_time - datetime.now()).total_seconds() / 3600) if new_expiry_time else -1
 
-                debug_logger.log_info(f"[AUTO_REFRESH] ✅ Token {token_id} 已自动刷新成功")
-                debug_logger.log_info(f"  - 刷新方式: {refresh_method}")
-                debug_logger.log_info(f"  - 新过期时间: {new_expiry_time.strftime('%Y-%m-%d %H:%M:%S') if new_expiry_time else 'N/A'}")
-                debug_logger.log_info(f"  - 新剩余时间: {new_hours_until_expiry:.2f} 小时")
+                debug_logger.log_info(f"[AUTO_REFRESH] ✅ Token {token_id} автоматически обновлён успешно")
+                debug_logger.log_info(f"  - Метод обновления: {refresh_method}")
+                debug_logger.log_info(f"  - Новое время истечения: {new_expiry_time.strftime('%Y-%m-%d %H:%M:%S') if new_expiry_time else 'N/A'}")
+                debug_logger.log_info(f"  - Новое оставшееся время: {new_hours_until_expiry:.2f} часов")
 
-                # 📍 Step 9: 检查刷新后的过期时间
+                # 📍 Step 9: Проверка времени истечения после обновления
                 if new_hours_until_expiry < 0:
-                    # 刷新后仍然过期，禁用Token
-                    debug_logger.log_info(f"[AUTO_REFRESH] 🔴 Token {token_id}: 刷新后仍然过期（剩余时间: {new_hours_until_expiry:.2f} 小时），已禁用")
+                    # Всё ещё истёк после обновления, отключаем Token
+                    debug_logger.log_info(f"[AUTO_REFRESH] 🔴 Token {token_id}: всё ещё истёк после обновления (оставшееся время: {new_hours_until_expiry:.2f} часов), отключён")
                     await self.disable_token(token_id)
                     return False
 
                 return True
             else:
-                # 刷新失败: 禁用Token
-                debug_logger.log_info(f"[AUTO_REFRESH] 🚫 Token {token_id}: 无法刷新（无有效的 ST 或 RT），已禁用")
+                # Обновление не удалось: отключаем Token
+                debug_logger.log_info(f"[AUTO_REFRESH] 🚫 Token {token_id}: не удалось обновить (нет действительного ST или RT), отключён")
                 await self.disable_token(token_id)
                 return False
 
         except Exception as e:
-            debug_logger.log_info(f"[AUTO_REFRESH] 🔴 Token {token_id}: 自动刷新异常 - {str(e)}")
+            debug_logger.log_info(f"[AUTO_REFRESH] 🔴 Token {token_id}: исключение при автоматическом обновлении - {str(e)}")
             return False

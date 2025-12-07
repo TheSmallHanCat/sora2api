@@ -30,9 +30,9 @@ class LoadBalancer:
         """
         # Try to auto-refresh tokens expiring within 24 hours if enabled
         if config.at_auto_refresh_enabled:
-            debug_logger.log_info(f"[LOAD_BALANCER] 🔄 自动刷新功能已启用，开始检查Token过期时间...")
+            debug_logger.log_info(f"[LOAD_BALANCER] 🔄 Функция автоматического обновления включена, начинаем проверку времени истечения Token...")
             all_tokens = await self.token_manager.get_all_tokens()
-            debug_logger.log_info(f"[LOAD_BALANCER] 📊 总Token数: {len(all_tokens)}")
+            debug_logger.log_info(f"[LOAD_BALANCER] 📊 Всего Token: {len(all_tokens)}")
 
             refresh_count = 0
             for token in all_tokens:

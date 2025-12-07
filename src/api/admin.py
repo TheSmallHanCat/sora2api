@@ -184,21 +184,21 @@ async def get_tokens(token: str = Depends(verify_admin_token)) -> List[dict]:
             "image_count": stats.image_count if stats else 0,
             "video_count": stats.video_count if stats else 0,
             "error_count": stats.error_count if stats else 0,
-            # 订阅信息
+            # Информация о подписке
             "plan_type": token.plan_type,
             "plan_title": token.plan_title,
             "subscription_end": token.subscription_end.isoformat() if token.subscription_end else None,
-            # Sora2信息
+            # Информация Sora2
             "sora2_supported": token.sora2_supported,
             "sora2_invite_code": token.sora2_invite_code,
             "sora2_redeemed_count": token.sora2_redeemed_count,
             "sora2_total_count": token.sora2_total_count,
             "sora2_remaining_count": token.sora2_remaining_count,
             "sora2_cooldown_until": token.sora2_cooldown_until.isoformat() if token.sora2_cooldown_until else None,
-            # 功能开关
+            # Переключатели функций
             "image_enabled": token.image_enabled,
             "video_enabled": token.video_enabled,
-            # 并发限制
+            # Ограничение конкурентности
             "image_concurrency": token.image_concurrency,
             "video_concurrency": token.video_concurrency
         })

@@ -1012,7 +1012,7 @@ class GenerationHandler:
 
             # Output character name immediately
             yield self._format_stream_chunk(
-                reasoning_content=f"✨ 角色已识别: {display_name} (@{username})\n"
+                reasoning_content=f"✨ Персонаж распознан: {display_name} (@{username})\n"
             )
 
             # Step 3: Download and cache avatar
@@ -1130,7 +1130,7 @@ class GenerationHandler:
 
             # Output character name immediately
             yield self._format_stream_chunk(
-                reasoning_content=f"✨ 角色已识别: {display_name} (@{username})\n"
+                reasoning_content=f"✨ Персонаж распознан: {display_name} (@{username})\n"
             )
 
             # Step 3: Download and cache avatar

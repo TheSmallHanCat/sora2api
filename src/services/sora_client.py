@@ -49,36 +49,36 @@ class SoraClient:
         # Совпадение формата: [цифраs] или [цифра.цифраs]
         pattern = r'\[\d+(?:\.\d+)?s\]'
         matches = re.findall(pattern, prompt)
-        # 至少包含一个时间标记才认为是分镜模式
+        # Должна быть хотя бы одна временная метка для режима раскадровки
         return len(matches) >= 1
 
     @staticmethod
     def format_storyboard_prompt(prompt: str) -> str:
-        """将分镜格式提示词转换为API所需格式
+        """Преобразование промпта формата раскадровки в формат API
 
-        输入: 猫猫的奇妙冒险\n[5.0s]猫猫从飞机上跳伞 [5.0s]猫猫降落
-        输出: current timeline:\nShot 1:...\n\ninstructions:\n猫猫的奇妙冒险
+        Вход: Волшебное приключение котика\n[5.0s]Котик прыгает с парашютом [5.0s]Котик приземляется
+        Выход: current timeline:\nShot 1:...\n\ninstructions:\nВолшебное приключение котика
 
         Args:
-            prompt: 原始分镜格式提示词
+            prompt: Исходный промпт в формате раскадровки
 
         Returns:
-            格式化后的API提示词
+            Отформатированный промпт для API
         """
-        # 匹配 [时间]内容 的模式
+        # Совпадение шаблона [время]содержание
         pattern = r'\[(\d+(?:\.\d+)?)s\]\s*([^\[]+)'
         matches = re.findall(pattern, prompt)
 
         if not matches:
             return prompt
 
-        # 提取总述(第一个[时间]之前的内容)
+        # Извлечение общего описания (содержимое до первой [время])
         first_bracket_pos = prompt.find('[')
         instructions = ""
         if first_bracket_pos > 0:
             instructions = prompt[:first_bracket_pos].strip()
 
-        # 格式化分镜
+        # Форматирование кадров
         formatted_shots = []
         for idx, (duration, scene) in enumerate(matches, 1):
             scene = scene.strip()
@@ -87,7 +87,7 @@ class SoraClient:
 
         timeline = "\n\n".join(formatted_shots)
 
-        # 如果有总述,添加instructions部分
+        # Если есть общее описание, добавляем секцию instructions
         if instructions:
             return f"current timeline:\n{timeline}\n\ninstructions:\n{instructions}"
         else:
@@ -113,7 +113,7 @@ class SoraClient:
             "Authorization": f"Bearer {token}"
         }
 
-        # 只在生成请求时添加 sentinel token
+        # Добавляем sentinel token только при запросах генерации
         if add_sentinel_token:
             headers["openai-sentinel-token"] = self._generate_sentinel_token()
 
@@ -126,7 +126,7 @@ class SoraClient:
             kwargs = {
                 "headers": headers,
                 "timeout": self.timeout,
-                "impersonate": "chrome"  # 自动生成 User-Agent 和浏览器指纹
+                "impersonate": "chrome"  # Автоматическая генерация User-Agent и отпечатка браузера
             }
 
             if proxy_url:
@@ -195,20 +195,20 @@ class SoraClient:
     async def upload_image(self, image_data: bytes, token: str, filename: str = "image.png") -> str:
         """Upload image and return media_id
 
-        使用 CurlMime 对象上传文件（curl_cffi 的正确方式）
-        参考：https://curl-cffi.readthedocs.io/en/latest/quick_start.html#uploads
+        Использование объекта CurlMime для загрузки файлов (правильный способ для curl_cffi)
+        Справка: https://curl-cffi.readthedocs.io/en/latest/quick_start.html#uploads
         """
-        # 检测图片类型
+        # Определение типа изображения
         mime_type = "image/png"
         if filename.lower().endswith('.jpg') or filename.lower().endswith('.jpeg'):
             mime_type = "image/jpeg"
         elif filename.lower().endswith('.webp'):
             mime_type = "image/webp"
 
-        # 创建 CurlMime 对象
+        # Создание объекта CurlMime
         mp = CurlMime()
 
-        # 添加文件部分
+        # Добавление части файла
         mp.addpart(
             name="file",
             content_type=mime_type,
@@ -216,7 +216,7 @@ class SoraClient:
             data=image_data
         )
 
-        # 添加文件名字段
+        # Добавление поля с именем файла
         mp.addpart(
             name="file_name",
             data=filename.encode('utf-8')
@@ -249,7 +249,7 @@ class SoraClient:
             "inpaint_items": inpaint_items
         }
 
-        # 生成请求需要添加 sentinel token
+        # Для запроса генерации требуется добавить sentinel token
         result = await self._make_request("POST", "/video_gen", token, json_data=json_data, add_sentinel_token=True)
         return result["id"]
     
@@ -273,7 +273,7 @@ class SoraClient:
             "inpaint_items": inpaint_items
         }
 
-        # 生成请求需要添加 sentinel token
+        # Для запроса генерации требуется добавить sentinel token
         result = await self._make_request("POST", "/nf/create", token, json_data=json_data, add_sentinel_token=True)
         return result["id"]
     
@@ -316,10 +316,10 @@ class SoraClient:
             "post_text": ""
         }
 
-        # 发布请求需要添加 sentinel token
+        # Для запроса публикации требуется добавить sentinel token
         result = await self._make_request("POST", "/project_y/post", token, json_data=json_data, add_sentinel_token=True)
 
-        # 返回 post.id
+        # Возвращаем post.id
         return result.get("post", {}).get("id", "")
 
     async def delete_post(self, post_id: str, token: str) -> bool:
