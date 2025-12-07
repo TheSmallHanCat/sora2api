@@ -23,9 +23,9 @@ class SoraClient:
     @staticmethod
     def _generate_sentinel_token() -> str:
         """
-        生成 openai-sentinel-token
-        根据测试文件的逻辑，传入任意随机字符即可
-        生成10-20个字符的随机字符串（字母+数字）
+        Генерация openai-sentinel-token
+        Согласно логике тестового файла, можно передать любую случайную строку
+        Генерация случайной строки из 10-20 символов (буквы+цифры)
         """
         length = random.randint(10, 20)
         random_str = ''.join(random.choices(string.ascii_letters + string.digits, k=length))
@@ -33,20 +33,20 @@ class SoraClient:
 
     @staticmethod
     def is_storyboard_prompt(prompt: str) -> bool:
-        """检测提示词是否为分镜模式格式
+        """Определяет, является ли промпт форматом покадрового режима
 
-        格式: [time]prompt 或 [time]prompt\n[time]prompt
-        例如: [5.0s]猫猫从飞机上跳伞 [5.0s]猫猫降落
+        Формат: [time]prompt или [time]prompt\n[time]prompt
+        Пример: [5.0s]кошка прыгает с парашютом [5.0s]кошка приземляется
 
         Args:
-            prompt: 用户输入的提示词
+            prompt: Введенный пользователем промпт
 
         Returns:
             True if prompt matches storyboard format
         """
         if not prompt:
             return False
-        # 匹配格式: [数字s] 或 [数字.数字s]
+        # Совпадение формата: [цифраs] или [цифра.цифраs]
         pattern = r'\[\d+(?:\.\d+)?s\]'
         matches = re.findall(pattern, prompt)
         # 至少包含一个时间标记才认为是分镜模式

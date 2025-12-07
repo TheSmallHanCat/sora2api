@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN" class="h-full">
+<html lang="ru" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>管理控制台 - Sora2API</title>
+    <title>Консоль управления - Sora2API</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @keyframes slide-up{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
@@ -15,14 +15,14 @@
     </script>
 </head>
 <body class="h-full bg-background text-foreground antialiased">
-    <!-- 导航栏 -->
+    <!-- Навигационная панель -->
     <header class="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur">
         <div class="mx-auto flex h-14 max-w-7xl items-center px-6">
             <div class="mr-4 flex items-baseline gap-3">
                 <span class="font-bold text-xl">Sora2API</span>
             </div>
             <div class="flex flex-1 items-center justify-end gap-3">
-                <a href="https://github.com/TheSmallHanCat/sora2api" target="_blank" class="inline-flex items-center justify-center text-xs transition-colors hover:bg-accent hover:text-accent-foreground h-7 px-2.5" title="GitHub 仓库">
+                <a href="https://github.com/TheSmallHanCat/sora2api" target="_blank" class="inline-flex items-center justify-center text-xs transition-colors hover:bg-accent hover:text-accent-foreground h-7 px-2.5" title="GitHub репозиторий">
                     <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v 3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                     </svg>
@@ -33,95 +33,95 @@
                         <polyline points="16 17 21 12 16 7"/>
                         <line x1="21" y1="12" x2="9" y2="12"/>
                     </svg>
-                    退出
+                    Выход
                 </button>
             </div>
         </div>
     </header>
 
     <main class="mx-auto max-w-7xl px-6 py-6">
-        <!-- Tab 导航 -->
+        <!-- Tab навигация -->
         <div class="border-b border-border mb-6">
             <nav class="flex space-x-8">
-                <button onclick="switchTab('tokens')" id="tabTokens" class="tab-btn border-b-2 border-primary text-sm font-medium py-3 px-1">Token 管理</button>
-                <button onclick="switchTab('settings')" id="tabSettings" class="tab-btn border-b-2 border-transparent text-sm font-medium py-3 px-1">系统配置</button>
-                <button onclick="switchTab('logs')" id="tabLogs" class="tab-btn border-b-2 border-transparent text-sm font-medium py-3 px-1">请求日志</button>
+                <button onclick="switchTab('tokens')" id="tabTokens" class="tab-btn border-b-2 border-primary text-sm font-medium py-3 px-1">Управление Token</button>
+                <button onclick="switchTab('settings')" id="tabSettings" class="tab-btn border-b-2 border-transparent text-sm font-medium py-3 px-1">Настройки системы</button>
+                <button onclick="switchTab('logs')" id="tabLogs" class="tab-btn border-b-2 border-transparent text-sm font-medium py-3 px-1">Журнал запросов</button>
             </nav>
         </div>
 
-        <!-- Token 管理面板 -->
+        <!-- Панель управления Token -->
         <div id="panelTokens">
-            <!-- 统计卡片 -->
+            <!-- Статистические карточки -->
             <div class="grid gap-4 grid-cols-2 md:grid-cols-5 mb-6">
                 <div class="rounded-lg border border-border bg-background p-4">
-                    <p class="text-sm font-medium text-muted-foreground mb-2">Token 总数</p>
+                    <p class="text-sm font-medium text-muted-foreground mb-2">Всего Token</p>
                     <h3 class="text-xl font-bold" id="statTotal">-</h3>
                 </div>
                 <div class="rounded-lg border border-border bg-background p-4">
-                    <p class="text-sm font-medium text-muted-foreground mb-2">活跃 Token</p>
+                    <p class="text-sm font-medium text-muted-foreground mb-2">Активных Token</p>
                     <h3 class="text-xl font-bold text-green-600" id="statActive">-</h3>
                 </div>
                 <div class="rounded-lg border border-border bg-background p-4">
-                    <p class="text-sm font-medium text-muted-foreground mb-2">今日图片/总图片</p>
+                    <p class="text-sm font-medium text-muted-foreground mb-2">Изображения сегодня/всего</p>
                     <h3 class="text-xl font-bold text-blue-600" id="statImages">-</h3>
                 </div>
                 <div class="rounded-lg border border-border bg-background p-4">
-                    <p class="text-sm font-medium text-muted-foreground mb-2">今日视频/总视频</p>
+                    <p class="text-sm font-medium text-muted-foreground mb-2">Видео сегодня/всего</p>
                     <h3 class="text-xl font-bold text-purple-600" id="statVideos">-</h3>
                 </div>
                 <div class="rounded-lg border border-border bg-background p-4">
-                    <p class="text-sm font-medium text-muted-foreground mb-2">今日错误/总错误</p>
+                    <p class="text-sm font-medium text-muted-foreground mb-2">Ошибки сегодня/всего</p>
                     <h3 class="text-xl font-bold text-destructive" id="statErrors">-</h3>
                 </div>
             </div>
 
-            <!-- Token 列表 -->
+            <!-- Список Token -->
             <div class="rounded-lg border border-border bg-background">
                 <div class="flex items-center justify-between gap-4 p-4 border-b border-border">
-                    <h3 class="text-lg font-semibold">Token 列表</h3>
+                    <h3 class="text-lg font-semibold">Список Token</h3>
                     <div class="flex items-center gap-3">
-                        <!-- 自动刷新AT标签和开关 -->
+                        <!-- Автообновление AT метка и переключатель -->
                         <div class="flex items-center gap-2">
-                            <span class="text-xs text-muted-foreground">自动刷新AT</span>
+                            <span class="text-xs text-muted-foreground">Автообновление AT</span>
                             <div class="relative inline-flex items-center group">
                                 <label class="inline-flex items-center cursor-pointer">
                                     <input type="checkbox" id="atAutoRefreshToggle" onchange="toggleATAutoRefresh()" class="sr-only peer">
                                     <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                                 </label>
-                                <!-- 悬浮提示 -->
+                                <!-- Всплывающая подсказка -->
                                 <div class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs rounded px-2 py-1 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-                                    Token距离过期<24h时自动使用ST或RT刷新AT
+                                    Когда до истечения Token <24ч, автоматически обновлять AT используя ST или RT
                                     <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
                                 </div>
                             </div>
                         </div>
-                        <button onclick="refreshTokens()" class="inline-flex items-center justify-center rounded-md transition-colors hover:bg-accent h-8 w-8" title="刷新">
+                        <button onclick="refreshTokens()" class="inline-flex items-center justify-center rounded-md transition-colors hover:bg-accent h-8 w-8" title="Обновить">
                             <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
                             </svg>
                         </button>
-                        <button onclick="exportTokens()" class="inline-flex items-center justify-center rounded-md bg-blue-600 text-white hover:bg-blue-700 h-8 px-3" title="导出所有Token">
+                        <button onclick="exportTokens()" class="inline-flex items-center justify-center rounded-md bg-blue-600 text-white hover:bg-blue-700 h-8 px-3" title="Экспортировать все Token">
                             <svg class="h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                                 <polyline points="7 10 12 15 17 10"/>
                                 <line x1="12" y1="15" x2="12" y2="3"/>
                             </svg>
-                            <span class="text-sm font-medium">导出</span>
+                            <span class="text-sm font-medium">Экспорт</span>
                         </button>
-                        <button onclick="openImportModal()" class="inline-flex items-center justify-center rounded-md bg-green-600 text-white hover:bg-green-700 h-8 px-3" title="导入Token">
+                        <button onclick="openImportModal()" class="inline-flex items-center justify-center rounded-md bg-green-600 text-white hover:bg-green-700 h-8 px-3" title="Импортировать Token">
                             <svg class="h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                                 <polyline points="17 8 12 3 7 8"/>
                                 <line x1="12" y1="3" x2="12" y2="15"/>
                             </svg>
-                            <span class="text-sm font-medium">导入</span>
+                            <span class="text-sm font-medium">Импорт</span>
                         </button>
                         <button onclick="openAddModal()" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-8 px-3">
                             <svg class="h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <line x1="12" y1="5" x2="12" y2="19"/>
                                 <line x1="5" y1="12" x2="19" y2="12"/>
                             </svg>
-                            <span class="text-sm font-medium">新增</span>
+                            <span class="text-sm font-medium">Добавить</span>
                         </button>
                     </div>
                 </div>
@@ -130,209 +130,209 @@
                     <table class="w-full text-sm">
                         <thead>
                             <tr class="border-b border-border">
-                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">邮箱</th>
-                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">状态</th>
+                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">Email</th>
+                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">Статус</th>
                                 <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">Client ID</th>
-                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">过期时间</th>
-                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">账户类型</th>
+                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">Истекает</th>
+                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">Тип аккаунта</th>
                                 <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">Sora2</th>
-                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">可用次数</th>
-                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">图片</th>
-                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">视频</th>
-                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">错误</th>
-                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">备注</th>
-                                <th class="h-10 px-3 text-right align-middle font-medium text-muted-foreground">操作</th>
+                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">Доступно</th>
+                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">Изображения</th>
+                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">Видео</th>
+                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">Ошибки</th>
+                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">Примечание</th>
+                                <th class="h-10 px-3 text-right align-middle font-medium text-muted-foreground">Действия</th>
                             </tr>
                         </thead>
                         <tbody id="tokenTableBody" class="divide-y divide-border">
-                            <!-- 动态填充 -->
+                            <!-- Динамическое заполнение -->
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- 系统配置面板 -->
+        <!-- Панель настроек системы -->
         <div id="panelSettings" class="hidden">
             <div class="grid gap-6 lg:grid-cols-2">
-                <!-- 安全配置 -->
+                <!-- Настройки безопасности -->
                 <div class="rounded-lg border border-border bg-background p-6">
-                    <h3 class="text-lg font-semibold mb-4">安全配置</h3>
+                    <h3 class="text-lg font-semibold mb-4">Настройки безопасности</h3>
                     <div class="space-y-4">
                         <div>
-                            <label class="text-sm font-medium mb-2 block">管理员用户名</label>
+                            <label class="text-sm font-medium mb-2 block">Имя администратора</label>
                             <input id="cfgAdminUsername" type="text" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                            <p class="text-xs text-muted-foreground mt-1">管理员用户名</p>
+                            <p class="text-xs text-muted-foreground mt-1">Имя администратора</p>
                         </div>
                         <div>
-                            <label class="text-sm font-medium mb-2 block">旧密码</label>
-                            <input id="cfgOldPassword" type="password" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="输入旧密码">
+                            <label class="text-sm font-medium mb-2 block">Старый пароль</label>
+                            <input id="cfgOldPassword" type="password" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="Введите старый пароль">
                         </div>
                         <div>
-                            <label class="text-sm font-medium mb-2 block">新密码</label>
-                            <input id="cfgNewPassword" type="password" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="输入新密码">
+                            <label class="text-sm font-medium mb-2 block">Новый пароль</label>
+                            <input id="cfgNewPassword" type="password" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="Введите новый пароль">
                         </div>
-                        <button onclick="updateAdminPassword()" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 w-full">修改密码</button>
+                        <button onclick="updateAdminPassword()" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 w-full">Изменить пароль</button>
                     </div>
                 </div>
 
-                <!-- API 密钥配置 -->
+                <!-- Настройка API ключа -->
                 <div class="rounded-lg border border-border bg-background p-6">
-                    <h3 class="text-lg font-semibold mb-4">API 密钥配置</h3>
+                    <h3 class="text-lg font-semibold mb-4">Настройка API ключа</h3>
                     <div class="space-y-4">
                         <div>
-                            <label class="text-sm font-medium mb-2 block">当前 API Key</label>
+                            <label class="text-sm font-medium mb-2 block">Текущий API ключ</label>
                             <input id="cfgCurrentAPIKey" type="text" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" readonly disabled>
-                            <p class="text-xs text-muted-foreground mt-1">当前使用的 API Key（只读）</p>
+                            <p class="text-xs text-muted-foreground mt-1">Используемый API ключ (только чтение)</p>
                         </div>
                         <div>
-                            <label class="text-sm font-medium mb-2 block">新 API Key</label>
-                            <input id="cfgNewAPIKey" type="text" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="输入新的 API Key">
-                            <p class="text-xs text-muted-foreground mt-1">用于客户端调用 API 的密钥</p>
+                            <label class="text-sm font-medium mb-2 block">Новый API ключ</label>
+                            <input id="cfgNewAPIKey" type="text" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="Введите новый API ключ">
+                            <p class="text-xs text-muted-foreground mt-1">Ключ для вызова API клиентом</p>
                         </div>
-                        <button onclick="updateAPIKey()" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 w-full">更新 API Key</button>
+                        <button onclick="updateAPIKey()" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 w-full">Обновить API ключ</button>
                     </div>
                 </div>
 
-                <!-- 代理配置 -->
+                <!-- Настройка прокси -->
                 <div class="rounded-lg border border-border bg-background p-6">
-                    <h3 class="text-lg font-semibold mb-4">代理配置</h3>
+                    <h3 class="text-lg font-semibold mb-4">Настройка прокси</h3>
                     <div class="space-y-4">
                         <div>
                             <label class="inline-flex items-center gap-2 cursor-pointer">
                                 <input type="checkbox" id="cfgProxyEnabled" class="h-4 w-4 rounded border-input">
-                                <span class="text-sm font-medium">启用代理</span>
+                                <span class="text-sm font-medium">Включить прокси</span>
                             </label>
                         </div>
                         <div>
-                            <label class="text-sm font-medium mb-2 block">代理地址</label>
-                            <input id="cfgProxyUrl" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="http://127.0.0.1:7890 或 socks5://127.0.0.1:1080">
-                            <p class="text-xs text-muted-foreground mt-1">支持 HTTP 和 SOCKS5 代理</p>
+                            <label class="text-sm font-medium mb-2 block">Адрес прокси</label>
+                            <input id="cfgProxyUrl" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="http://127.0.0.1:7890 или socks5://127.0.0.1:1080">
+                            <p class="text-xs text-muted-foreground mt-1">Поддержка HTTP и SOCKS5 прокси</p>
                         </div>
-                        <button onclick="saveProxyConfig()" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 w-full">保存配置</button>
+                        <button onclick="saveProxyConfig()" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 w-full">Сохранить настройки</button>
                     </div>
                 </div>
 
-                <!-- 错误处理配置 -->
+                <!-- Настройки обработки ошибок -->
                 <div class="rounded-lg border border-border bg-background p-6">
-                    <h3 class="text-lg font-semibold mb-4">错误处理配置</h3>
+                    <h3 class="text-lg font-semibold mb-4">Настройки обработки ошибок</h3>
                     <div class="space-y-4">
                         <div>
-                            <label class="text-sm font-medium mb-2 block">错误封禁阈值</label>
+                            <label class="text-sm font-medium mb-2 block">Порог блокировки по ошибкам</label>
                             <input id="cfgErrorBan" type="number" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="3">
-                            <p class="text-xs text-muted-foreground mt-1">Token 连续错误达到此次数后自动禁用</p>
+                            <p class="text-xs text-muted-foreground mt-1">Автоматическая блокировка Token при достижении числа последовательных ошибок</p>
                         </div>
-                        <button onclick="saveAdminConfig()" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 w-full">保存配置</button>
+                        <button onclick="saveAdminConfig()" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 w-full">Сохранить настройки</button>
                     </div>
                 </div>
 
-                <!-- 缓存配置 -->
+                <!-- Настройка кэша -->
                 <div class="rounded-lg border border-border bg-background p-6">
-                    <h3 class="text-lg font-semibold mb-4">缓存配置</h3>
+                    <h3 class="text-lg font-semibold mb-4">Настройка кэша</h3>
                     <div class="space-y-4">
                         <div>
                             <label class="inline-flex items-center gap-2 cursor-pointer">
                                 <input type="checkbox" id="cfgCacheEnabled" class="h-4 w-4 rounded border-input" onchange="toggleCacheOptions()">
-                                <span class="text-sm font-medium">启用缓存</span>
+                                <span class="text-sm font-medium">Включить кэш</span>
                             </label>
-                            <p class="text-xs text-muted-foreground mt-1">关闭后，生成的图片和视频将直接输出原始链接，不会缓存到本地</p>
+                            <p class="text-xs text-muted-foreground mt-1">При отключении сгенерированные изображения и видео будут выводиться напрямую ссылкой, без кэширования</p>
                         </div>
 
-                        <!-- 缓存配置选项 -->
+                        <!-- Настройки кэша -->
                         <div id="cacheOptions" style="display: none;" class="space-y-4 pt-4 border-t border-border">
                             <div>
-                                <label class="text-sm font-medium mb-2 block">缓存超时时间（秒）</label>
+                                <label class="text-sm font-medium mb-2 block">Время хранения кэша (секунд)</label>
                                 <input id="cfgCacheTimeout" type="number" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="7200" min="60" max="86400">
-                                <p class="text-xs text-muted-foreground mt-1">文件缓存超时时间，范围：60-86400 秒（1分钟-24小时）</p>
+                                <p class="text-xs text-muted-foreground mt-1">Время хранения файлов, диапазон: 60-86400 секунд (1 минута - 24 часа)</p>
                             </div>
                             <div>
-                                <label class="text-sm font-medium mb-2 block">缓存文件访问域名</label>
+                                <label class="text-sm font-medium mb-2 block">Домен для доступа к кэшу</label>
                                 <input id="cfgCacheBaseUrl" type="text" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="https://yourdomain.com">
-                                <p class="text-xs text-muted-foreground mt-1">留空则使用服务器地址，例如：https://yourdomain.com</p>
+                                <p class="text-xs text-muted-foreground mt-1">Оставьте пустым для использования адреса сервера, например: https://yourdomain.com</p>
                             </div>
                             <div id="cacheEffectiveUrl" class="rounded-md bg-muted p-3 hidden">
                                 <p class="text-xs text-muted-foreground">
-                                    <strong>🌐 当前生效的访问地址：</strong><code id="cacheEffectiveUrlValue" class="bg-background px-1 py-0.5 rounded"></code>
+                                    <strong>🌐 Текущий адрес доступа:</strong><code id="cacheEffectiveUrlValue" class="bg-background px-1 py-0.5 rounded"></code>
                                 </p>
                             </div>
                         </div>
 
-                        <button onclick="saveCacheConfig()" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 w-full">保存配置</button>
+                        <button onclick="saveCacheConfig()" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 w-full">Сохранить конфигурацию</button>
                     </div>
                 </div>
 
-                <!-- 生成超时配置 -->
+                <!-- Настройка таймаутов генерации -->
                 <div class="rounded-lg border border-border bg-background p-6">
-                    <h3 class="text-lg font-semibold mb-4">生成超时配置</h3>
+                    <h3 class="text-lg font-semibold mb-4">Настройка таймаутов генерации</h3>
                     <div class="space-y-4">
                         <div>
-                            <label class="text-sm font-medium mb-2 block">图片生成超时时间（秒）</label>
+                            <label class="text-sm font-medium mb-2 block">Таймаут генерации изображений (секунды)</label>
                             <input id="cfgImageTimeout" type="number" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="300" min="60" max="3600">
-                            <p class="text-xs text-muted-foreground mt-1">图片生成超时时间，范围：60-3600 秒（1分钟-1小时），超时后自动释放Token锁</p>
+                            <p class="text-xs text-muted-foreground mt-1">Таймаут генерации изображений, диапазон: 60-3600 секунд (1 минута - 1 час), после таймаута автоматически освобождается блокировка Token</p>
                         </div>
                         <div>
-                            <label class="text-sm font-medium mb-2 block">视频生成超时时间（秒）</label>
+                            <label class="text-sm font-medium mb-2 block">Таймаут генерации видео (секунды)</label>
                             <input id="cfgVideoTimeout" type="number" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="1500" min="60" max="7200">
-                            <p class="text-xs text-muted-foreground mt-1">视频生成超时时间，范围：60-7200 秒（1分钟-2小时），超时后返回上游API超时错误</p>
+                            <p class="text-xs text-muted-foreground mt-1">Таймаут генерации видео, диапазон: 60-7200 секунд (1 минута - 2 часа), после таймаута возвращается ошибка таймаута вышестоящего API</p>
                         </div>
-                        <button onclick="saveGenerationTimeout()" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 w-full">保存配置</button>
+                        <button onclick="saveGenerationTimeout()" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 w-full">Сохранить конфигурацию</button>
                     </div>
                 </div>
 
-                <!-- 无水印模式配置 -->
+                <!-- Настройка режима без водяных знаков -->
                 <div class="rounded-lg border border-border bg-background p-6">
-                    <h3 class="text-lg font-semibold mb-4">无水印模式配置</h3>
+                    <h3 class="text-lg font-semibold mb-4">Настройка режима без водяных знаков</h3>
                     <div class="space-y-4">
                         <div>
                             <label class="inline-flex items-center gap-2 cursor-pointer">
                                 <input type="checkbox" id="cfgWatermarkFreeEnabled" class="h-4 w-4 rounded border-input" onchange="toggleWatermarkFreeOptions()">
-                                <span class="text-sm font-medium">开启无水印模式</span>
+                                <span class="text-sm font-medium">Включить режим без водяных знаков</span>
                             </label>
-                            <p class="text-xs text-muted-foreground mt-2">开启后生成的视频将会被发布到sora平台并且提取返回无水印的视频，在缓存到本地后会自动删除发布的视频</p>
+                            <p class="text-xs text-muted-foreground mt-2">При включении сгенерированное видео будет опубликовано на платформе Sora, извлечено без водяного знака, а после кэширования автоматически удалено</p>
                         </div>
 
-                        <!-- 解析方式选择 -->
+                        <!-- Выбор метода парсинга -->
                         <div id="watermarkFreeOptions" style="display: none;" class="space-y-4 pt-4 border-t border-border">
                             <div>
-                                <label class="text-sm font-medium">解析方式</label>
+                                <label class="text-sm font-medium">Метод парсинга</label>
                                 <select id="cfgParseMethod" class="w-full mt-2 px-3 py-2 border border-input rounded-md bg-background text-foreground" onchange="toggleCustomParseOptions()">
-                                    <option value="third_party">第三方解析</option>
-                                    <option value="custom">自定义解析接口</option>
+                                    <option value="third_party">Сторонний парсинг</option>
+                                    <option value="custom">Пользовательский интерфейс парсинга</option>
                                 </select>
                             </div>
 
-                            <!-- 自定义解析配置 -->
+                            <!-- Настройки пользовательского парсинга -->
                             <div id="customParseOptions" style="display: none;" class="space-y-4">
                                 <div>
-                                    <label class="text-sm font-medium">解析服务器地址</label>
-                                    <input type="text" id="cfgCustomParseUrl" placeholder="请输入解析服务器地址 (例如: http://example.com)" class="w-full mt-2 px-3 py-2 border border-input rounded-md bg-background text-foreground">
-                                    <p class="text-xs text-muted-foreground mt-1"><a href="https://github.com/tibbar213/sora-downloader" target="_blank" class="text-blue-600 hover:text-blue-800 underline">部署自定义解析服务器</a></p>
+                                    <label class="text-sm font-medium">Адрес сервера парсинга</label>
+                                    <input type="text" id="cfgCustomParseUrl" placeholder="Введите адрес сервера (например: http://example.com)" class="w-full mt-2 px-3 py-2 border border-input rounded-md bg-background text-foreground">
+                                    <p class="text-xs text-muted-foreground mt-1"><a href="https://github.com/tibbar213/sora-downloader" target="_blank" class="text-blue-600 hover:text-blue-800 underline">Развернуть собственный сервер парсинга</a></p>
                                 </div>
                                 <div>
-                                    <label class="text-sm font-medium">访问密钥</label>
-                                    <input type="password" id="cfgCustomParseToken" placeholder="请输入访问密钥" class="w-full mt-2 px-3 py-2 border border-input rounded-md bg-background text-foreground">
+                                    <label class="text-sm font-medium">Ключ доступа</label>
+                                    <input type="password" id="cfgCustomParseToken" placeholder="Введите ключ доступа" class="w-full mt-2 px-3 py-2 border border-input rounded-md bg-background text-foreground">
                                 </div>
                             </div>
                         </div>
 
-                        <button onclick="saveWatermarkFreeConfig()" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 w-full">保存配置</button>
+                        <button onclick="saveWatermarkFreeConfig()" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 w-full">Сохранить настройки</button>
                     </div>
                 </div>
 
-                <!-- 调试配置 -->
+                <!-- Настройки отладки -->
                 <div class="rounded-lg border border-border bg-background p-6">
-                    <h3 class="text-lg font-semibold mb-4">调试配置</h3>
+                    <h3 class="text-lg font-semibold mb-4">Настройки отладки</h3>
                     <div class="space-y-4">
                         <div>
                             <label class="inline-flex items-center gap-2 cursor-pointer">
                                 <input type="checkbox" id="cfgDebugEnabled" class="h-4 w-4 rounded border-input" onchange="toggleDebugMode()">
-                                <span class="text-sm font-medium">启用调试模式</span>
+                                <span class="text-sm font-medium">Включить режим отладки</span>
                             </label>
-                            <p class="text-xs text-muted-foreground mt-2">开启后，详细的上游API请求和响应日志将写入 <code class="bg-muted px-1 py-0.5 rounded">logs.txt</code> 文件，重启生效</p>
+                            <p class="text-xs text-muted-foreground mt-2">При включении подробные логи запросов и ответов API будут записываться в файл <code class="bg-muted px-1 py-0.5 rounded">logs.txt</code>, требуется перезапуск</p>
                         </div>
                         <div class="rounded-md bg-yellow-50 dark:bg-yellow-900/20 p-3 border border-yellow-200 dark:border-yellow-800">
                             <p class="text-xs text-yellow-800 dark:text-yellow-200">
-                                ⚠️ <strong>注意：</strong>调试模式会产生非常非常大量的日志，仅限Debug时候开启，否则磁盘boom
+                                ⚠️ <strong>Внимание:</strong> Режим отладки генерирует очень большой объем логов, используйте только при отладке
                             </p>
                         </div>
                     </div>
@@ -340,12 +340,12 @@
             </div>
         </div>
 
-        <!-- 请求日志面板 -->
+        <!-- Панель журнала запросов -->
         <div id="panelLogs" class="hidden">
             <div class="rounded-lg border border-border bg-background">
                 <div class="flex items-center justify-between gap-4 p-4 border-b border-border">
-                    <h3 class="text-lg font-semibold">请求日志</h3>
-                    <button onclick="refreshLogs()" class="inline-flex items-center justify-center rounded-md transition-colors hover:bg-accent h-8 w-8" title="刷新">
+                    <h3 class="text-lg font-semibold">Журнал запросов</h3>
+                    <button onclick="refreshLogs()" class="inline-flex items-center justify-center rounded-md transition-colors hover:bg-accent h-8 w-8" title="Обновить">
                         <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
                         </svg>
@@ -355,32 +355,32 @@
                     <table class="w-full text-sm">
                         <thead class="sticky top-0 bg-background">
                             <tr class="border-b border-border">
-                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">操作</th>
-                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">Token邮箱</th>
-                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">状态码</th>
-                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">耗时(秒)</th>
-                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">时间</th>
+                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">Действия</th>
+                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">TokenEmail</th>
+                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">Статус код</th>
+                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">Длительность (секунды)</th>
+                                <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground">Время</th>
                             </tr>
                         </thead>
                         <tbody id="logsTableBody" class="divide-y divide-border">
-                            <!-- 动态填充 -->
+                            <!-- Динамическое заполнение -->
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- 页脚 -->
+        <!-- Подвал -->
         <footer class="mt-12 pt-6 border-t border-border text-center text-xs text-muted-foreground">
             <p>© 2025 <a href="https://linux.do/u/thesmallhancat/summary" target="_blank" class="no-underline hover:underline" style="color: inherit;">TheSmallHanCat</a> && <a href="https://linux.do/u/tibbar/summary" target="_blank" class="no-underline hover:underline" style="color: inherit;">Tibbar</a>. All rights reserved.</p>
         </footer>
     </main>
 
-    <!-- 添加 Token 模态框 -->
+    <!-- Модальное окно добавления Token -->
     <div id="addModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-background rounded-lg border border-border w-full max-w-2xl shadow-xl my-auto">
             <div class="flex items-center justify-between p-5 border-b border-border sticky top-0 bg-background">
-                <h3 class="text-lg font-semibold">添加 Token</h3>
+                <h3 class="text-lg font-semibold">Добавить Token</h3>
                 <button onclick="closeAddModal()" class="text-muted-foreground hover:text-foreground">
                     <svg class="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="18" y1="6" x2="6" y2="18"/>
@@ -392,75 +392,75 @@
                 <!-- Access Token -->
                 <div class="space-y-2">
                     <label class="text-sm font-medium">Access Token (AT) <span class="text-red-500">*</span></label>
-                    <textarea id="addTokenAT" rows="3" class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono resize-none" placeholder="请输入 Access Token 或使用下方 ST/RT 转换"></textarea>
-                    <p class="text-xs text-muted-foreground">格式: eyJh... (JWT格式)</p>
+                    <textarea id="addTokenAT" rows="3" class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono resize-none" placeholder="Введите Access Token или используйте ST/RT конвертацию ниже"></textarea>
+                    <p class="text-xs text-muted-foreground">Формат: eyJh... (JWT формат)</p>
                 </div>
 
                 <!-- Session Token -->
                 <div class="space-y-2">
-                    <label class="text-sm font-medium">Session Token (ST) <span class="text-muted-foreground text-xs">- 可选</span></label>
+                    <label class="text-sm font-medium">Session Token (ST) <span class="text-muted-foreground text-xs">- опционально</span></label>
                     <div class="flex gap-2">
-                        <textarea id="addTokenST" rows="2" class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono resize-none" placeholder="输入 Session Token 后点击转换"></textarea>
+                        <textarea id="addTokenST" rows="2" class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono resize-none" placeholder="Введите Session Token и нажмите конвертировать"></textarea>
                         <button onclick="convertST2AT()" class="inline-flex items-center justify-center rounded-md bg-blue-600 text-white hover:bg-blue-700 px-4 whitespace-nowrap h-auto">
                             ST→AT
                         </button>
                     </div>
-                    <p class="text-xs text-muted-foreground">从浏览器 Cookie 中获取 __Secure-next-auth.session-token</p>
+                    <p class="text-xs text-muted-foreground">Получите из Cookie браузера __Secure-next-auth.session-token</p>
                 </div>
 
                 <!-- Refresh Token -->
                 <div class="space-y-2">
-                    <label class="text-sm font-medium">Refresh Token (RT) <span class="text-muted-foreground text-xs">- 可选</span></label>
+                    <label class="text-sm font-medium">Refresh Token (RT) <span class="text-muted-foreground text-xs">- опционально</span></label>
                     <div class="flex gap-2">
-                        <textarea id="addTokenRT" rows="2" class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono resize-none" placeholder="输入 Refresh Token 后点击转换"></textarea>
+                        <textarea id="addTokenRT" rows="2" class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono resize-none" placeholder="Введите Refresh Token и нажмите конвертировать"></textarea>
                         <button onclick="convertRT2AT()" class="inline-flex items-center justify-center rounded-md bg-green-600 text-white hover:bg-green-700 px-4 whitespace-nowrap h-auto">
                             RT→AT
                         </button>
                     </div>
-                    <p class="text-xs text-muted-foreground">从移动端或其他客户端获取</p>
-                    <p id="addRTRefreshHint" class="text-xs text-green-600 font-medium hidden">✓ RT已被刷新，已填入更新后的RT</p>
+                    <p class="text-xs text-muted-foreground">Получите из мобильного приложения или другого клиента</p>
+                    <p id="addRTRefreshHint" class="text-xs text-green-600 font-medium hidden">✓ RT обновлён, заполнен новый RT</p>
                 </div>
 
                 <!-- Client ID -->
                 <div class="space-y-2">
-                    <label class="text-sm font-medium">Client ID <span class="text-muted-foreground text-xs">- 可选</span></label>
-                    <input id="addTokenClientId" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono" placeholder="留空使用默认值">
-                    <p class="text-xs text-muted-foreground">用于 RT 刷新，留空使用默认 Client ID</p>
+                    <label class="text-sm font-medium">Client ID <span class="text-muted-foreground text-xs">- опционально</span></label>
+                    <input id="addTokenClientId" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono" placeholder="Оставьте пустым для значения по умолчанию">
+                    <p class="text-xs text-muted-foreground">Используется для обновления RT, оставьте пустым для Client ID по умолчанию</p>
                 </div>
 
                 <!-- Remark -->
                 <div class="space-y-2">
-                    <label class="text-sm font-medium">备注 <span class="text-muted-foreground text-xs">- 可选</span></label>
-                    <input id="addTokenRemark" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="添加备注信息">
+                    <label class="text-sm font-medium">Примечание <span class="text-muted-foreground text-xs">- опционально</span></label>
+                    <input id="addTokenRemark" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="Добавьте примечание">
                 </div>
 
-                <!-- 功能开关 -->
+                <!-- Переключатели функций -->
                 <div class="space-y-3 pt-2 border-t border-border">
-                    <label class="text-sm font-medium">功能开关</label>
+                    <label class="text-sm font-medium">Переключатели функций</label>
                     <div class="space-y-2">
                         <div class="flex items-center gap-3">
                             <label class="inline-flex items-center gap-2 cursor-pointer">
                                 <input type="checkbox" id="addTokenImageEnabled" checked class="h-4 w-4 rounded border-input">
-                                <span class="text-sm font-medium">启用图片生成</span>
+                                <span class="text-sm font-medium">Включить генерацию изображений</span>
                             </label>
-                            <input type="number" id="addTokenImageConcurrency" value="-1" class="flex h-8 w-20 rounded-md border border-input bg-background px-2 py-1 text-sm" placeholder="并发数" title="并发数量限制：设置同时处理的最大请求数。-1表示不限制">
+                            <input type="number" id="addTokenImageConcurrency" value="-1" class="flex h-8 w-20 rounded-md border border-input bg-background px-2 py-1 text-sm" placeholder="Параллельно" title="Лимит параллельных запросов: максимальное количество одновременных запросов. -1 = без ограничений">
                         </div>
                     </div>
                     <div class="space-y-2">
                         <div class="flex items-center gap-3">
                             <label class="inline-flex items-center gap-2 cursor-pointer">
                                 <input type="checkbox" id="addTokenVideoEnabled" checked class="h-4 w-4 rounded border-input">
-                                <span class="text-sm font-medium">启用视频生成</span>
+                                <span class="text-sm font-medium">Включить генерацию видео</span>
                             </label>
-                            <input type="number" id="addTokenVideoConcurrency" value="-1" class="flex h-8 w-20 rounded-md border border-input bg-background px-2 py-1 text-sm" placeholder="并发数" title="并发数量限制：设置同时处理的最大请求数。-1表示不限制">
+                            <input type="number" id="addTokenVideoConcurrency" value="-1" class="flex h-8 w-20 rounded-md border border-input bg-background px-2 py-1 text-sm" placeholder="Параллельно" title="Лимит параллельных запросов: максимальное количество одновременных запросов. -1 = без ограничений">
                         </div>
                     </div>
                 </div>
             </div>
             <div class="flex items-center justify-end gap-3 p-5 border-t border-border sticky bottom-0 bg-background">
-                <button onclick="closeAddModal()" class="inline-flex items-center justify-center rounded-md border border-input bg-background hover:bg-accent h-9 px-5">取消</button>
+                <button onclick="closeAddModal()" class="inline-flex items-center justify-center rounded-md border border-input bg-background hover:bg-accent h-9 px-5">Отмена</button>
                 <button id="addTokenBtn" onclick="submitAddToken()" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-5">
-                    <span id="addTokenBtnText">添加</span>
+                    <span id="addTokenBtnText">Добавить</span>
                     <svg id="addTokenBtnSpinner" class="hidden animate-spin h-4 w-4 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -470,11 +470,11 @@
         </div>
     </div>
 
-    <!-- 编辑 Token 模态框 -->
+    <!-- Модальное окно редактирования Token -->
     <div id="editModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-background rounded-lg border border-border w-full max-w-2xl shadow-xl my-auto">
             <div class="flex items-center justify-between p-5 border-b border-border sticky top-0 bg-background">
-                <h3 class="text-lg font-semibold">编辑 Token</h3>
+                <h3 class="text-lg font-semibold">Редактировать Token</h3>
                 <button onclick="closeEditModal()" class="text-muted-foreground hover:text-foreground">
                     <svg class="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="18" y1="6" x2="6" y2="18"/>
@@ -488,75 +488,75 @@
                 <!-- Access Token -->
                 <div class="space-y-2">
                     <label class="text-sm font-medium">Access Token (AT) <span class="text-red-500">*</span></label>
-                    <textarea id="editTokenAT" rows="3" class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono resize-none" placeholder="请输入 Access Token 或使用下方 ST/RT 转换"></textarea>
-                    <p class="text-xs text-muted-foreground">格式: eyJh... (JWT格式)</p>
+                    <textarea id="editTokenAT" rows="3" class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono resize-none" placeholder="Введите Access Token или используйте ST/RT конвертацию ниже"></textarea>
+                    <p class="text-xs text-muted-foreground">Формат: eyJh... (JWT формат)</p>
                 </div>
 
                 <!-- Session Token -->
                 <div class="space-y-2">
-                    <label class="text-sm font-medium">Session Token (ST) <span class="text-muted-foreground text-xs">- 可选</span></label>
+                    <label class="text-sm font-medium">Session Token (ST) <span class="text-muted-foreground text-xs">- опционально</span></label>
                     <div class="flex gap-2">
-                        <textarea id="editTokenST" rows="2" class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono resize-none" placeholder="输入 Session Token 后点击转换"></textarea>
+                        <textarea id="editTokenST" rows="2" class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono resize-none" placeholder="Введите Session Token и нажмите конвертировать"></textarea>
                         <button onclick="convertEditST2AT()" class="inline-flex items-center justify-center rounded-md bg-blue-600 text-white hover:bg-blue-700 px-4 whitespace-nowrap h-auto">
                             ST→AT
                         </button>
                     </div>
-                    <p class="text-xs text-muted-foreground">从浏览器 Cookie 中获取 __Secure-next-auth.session-token</p>
+                    <p class="text-xs text-muted-foreground">Получите из Cookie браузера __Secure-next-auth.session-token</p>
                 </div>
 
                 <!-- Refresh Token -->
                 <div class="space-y-2">
-                    <label class="text-sm font-medium">Refresh Token (RT) <span class="text-muted-foreground text-xs">- 可选</span></label>
+                    <label class="text-sm font-medium">Refresh Token (RT) <span class="text-muted-foreground text-xs">- опционально</span></label>
                     <div class="flex gap-2">
-                        <textarea id="editTokenRT" rows="2" class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono resize-none" placeholder="输入 Refresh Token 后点击转换"></textarea>
+                        <textarea id="editTokenRT" rows="2" class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono resize-none" placeholder="Введите Refresh Token и нажмите конвертировать"></textarea>
                         <button onclick="convertEditRT2AT()" class="inline-flex items-center justify-center rounded-md bg-green-600 text-white hover:bg-green-700 px-4 whitespace-nowrap h-auto">
                             RT→AT
                         </button>
                     </div>
-                    <p class="text-xs text-muted-foreground">从移动端或其他客户端获取</p>
-                    <p id="editRTRefreshHint" class="text-xs text-green-600 font-medium hidden">✓ RT已被刷新，已填入更新后的RT</p>
+                    <p class="text-xs text-muted-foreground">Получите из мобильного приложения или другого клиента</p>
+                    <p id="editRTRefreshHint" class="text-xs text-green-600 font-medium hidden">✓ RT обновлён, заполнен новый RT</p>
                 </div>
 
                 <!-- Client ID -->
                 <div class="space-y-2">
-                    <label class="text-sm font-medium">Client ID <span class="text-muted-foreground text-xs">- 可选</span></label>
-                    <input id="editTokenClientId" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono" placeholder="留空使用默认值">
-                    <p class="text-xs text-muted-foreground">用于 RT 刷新，留空使用默认 Client ID</p>
+                    <label class="text-sm font-medium">Client ID <span class="text-muted-foreground text-xs">- опционально</span></label>
+                    <input id="editTokenClientId" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono" placeholder="Оставьте пустым для значения по умолчанию">
+                    <p class="text-xs text-muted-foreground">Используется для обновления RT, оставьте пустым для Client ID по умолчанию</p>
                 </div>
 
                 <!-- Remark -->
                 <div class="space-y-2">
-                    <label class="text-sm font-medium">备注 <span class="text-muted-foreground text-xs">- 可选</span></label>
-                    <input id="editTokenRemark" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="添加备注信息">
+                    <label class="text-sm font-medium">Примечание <span class="text-muted-foreground text-xs">- опционально</span></label>
+                    <input id="editTokenRemark" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="Добавьте примечание">
                 </div>
 
-                <!-- 功能开关 -->
+                <!-- Переключатели функций -->
                 <div class="space-y-3 pt-2 border-t border-border">
-                    <label class="text-sm font-medium">功能开关</label>
+                    <label class="text-sm font-medium">Переключатели функций</label>
                     <div class="space-y-2">
                         <div class="flex items-center gap-3">
                             <label class="inline-flex items-center gap-2 cursor-pointer">
                                 <input type="checkbox" id="editTokenImageEnabled" class="h-4 w-4 rounded border-input">
-                                <span class="text-sm font-medium">启用图片生成</span>
+                                <span class="text-sm font-medium">Включить генерацию изображений</span>
                             </label>
-                            <input type="number" id="editTokenImageConcurrency" class="flex h-8 w-20 rounded-md border border-input bg-background px-2 py-1 text-sm" placeholder="并发数" title="并发数量限制：设置同时处理的最大请求数。-1表示不限制">
+                            <input type="number" id="editTokenImageConcurrency" class="flex h-8 w-20 rounded-md border border-input bg-background px-2 py-1 text-sm" placeholder="Параллельно" title="Лимит параллельных запросов: максимальное количество одновременных запросов. -1 = без ограничений">
                         </div>
                     </div>
                     <div class="space-y-2">
                         <div class="flex items-center gap-3">
                             <label class="inline-flex items-center gap-2 cursor-pointer">
                                 <input type="checkbox" id="editTokenVideoEnabled" class="h-4 w-4 rounded border-input">
-                                <span class="text-sm font-medium">启用视频生成</span>
+                                <span class="text-sm font-medium">Включить генерацию видео</span>
                             </label>
-                            <input type="number" id="editTokenVideoConcurrency" class="flex h-8 w-20 rounded-md border border-input bg-background px-2 py-1 text-sm" placeholder="并发数" title="并发数量限制：设置同时处理的最大请求数。-1表示不限制">
+                            <input type="number" id="editTokenVideoConcurrency" class="flex h-8 w-20 rounded-md border border-input bg-background px-2 py-1 text-sm" placeholder="Параллельно" title="Лимит параллельных запросов: максимальное количество одновременных запросов. -1 = без ограничений">
                         </div>
                     </div>
                 </div>
             </div>
             <div class="flex items-center justify-end gap-3 p-5 border-t border-border sticky bottom-0 bg-background">
-                <button onclick="closeEditModal()" class="inline-flex items-center justify-center rounded-md border border-input bg-background hover:bg-accent h-9 px-5">取消</button>
+                <button onclick="closeEditModal()" class="inline-flex items-center justify-center rounded-md border border-input bg-background hover:bg-accent h-9 px-5">Отмена</button>
                 <button id="editTokenBtn" onclick="submitEditToken()" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-5">
-                    <span id="editTokenBtnText">保存</span>
+                    <span id="editTokenBtnText">Сохранить</span>
                     <svg id="editTokenBtnSpinner" class="hidden animate-spin h-4 w-4 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -566,11 +566,11 @@
         </div>
     </div>
 
-    <!-- Sora2 激活模态框 -->
+    <!-- Модальное окно активации Sora2 -->
     <div id="sora2Modal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
         <div class="bg-background rounded-lg border border-border w-full max-w-md shadow-xl">
             <div class="flex items-center justify-between p-5 border-b border-border">
-                <h3 class="text-lg font-semibold">激活 Sora2</h3>
+                <h3 class="text-lg font-semibold">Активировать Sora2</h3>
                 <button onclick="closeSora2Modal()" class="text-muted-foreground hover:text-foreground">
                     <svg class="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="18" y1="6" x2="6" y2="18"/>
@@ -581,15 +581,15 @@
             <div class="p-5 space-y-4">
                 <input type="hidden" id="sora2TokenId">
                 <div>
-                    <label class="text-sm font-medium mb-2 block">Sora2 邀请码</label>
-                    <input id="sora2InviteCode" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="输入6位邀请码，例如：0ZSKEG">
-                    <p class="text-xs text-muted-foreground mt-1">输入Sora2邀请码以激活该Token的Sora2功能</p>
+                    <label class="text-sm font-medium mb-2 block">Sora2 Код приглашения</label>
+                    <input id="sora2InviteCode" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="Введите 6-значный код, например: 0ZSKEG">
+                    <p class="text-xs text-muted-foreground mt-1">Введите код приглашения Sora2 для активации функции для этого Token</p>
                 </div>
             </div>
             <div class="flex items-center justify-end gap-3 p-5 border-t border-border">
-                <button onclick="closeSora2Modal()" class="inline-flex items-center justify-center rounded-md border border-input bg-background hover:bg-accent h-9 px-5">取消</button>
+                <button onclick="closeSora2Modal()" class="inline-flex items-center justify-center rounded-md border border-input bg-background hover:bg-accent h-9 px-5">Отмена</button>
                 <button id="sora2ActivateBtn" onclick="submitSora2Activate()" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-5">
-                    <span id="sora2ActivateBtnText">激活</span>
+                    <span id="sora2ActivateBtnText">Активировать</span>
                     <svg id="sora2ActivateBtnSpinner" class="hidden animate-spin h-4 w-4 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -599,11 +599,11 @@
         </div>
     </div>
 
-    <!-- Token 导入模态框 -->
+    <!-- Модальное окно импорта Token -->
     <div id="importModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
         <div class="bg-background rounded-lg border border-border w-full max-w-md shadow-xl">
             <div class="flex items-center justify-between p-5 border-b border-border">
-                <h3 class="text-lg font-semibold">导入 Token</h3>
+                <h3 class="text-lg font-semibold">Импортировать Token</h3>
                 <button onclick="closeImportModal()" class="text-muted-foreground hover:text-foreground">
                     <svg class="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="18" y1="6" x2="6" y2="18"/>
@@ -613,20 +613,20 @@
             </div>
             <div class="p-5 space-y-4">
                 <div>
-                    <label class="text-sm font-medium mb-2 block">选择 JSON 文件</label>
+                    <label class="text-sm font-medium mb-2 block">Выберите JSON файл</label>
                     <input type="file" id="importFile" accept=".json" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                    <p class="text-xs text-muted-foreground mt-1">选择导出的 Token JSON 文件进行导入</p>
+                    <p class="text-xs text-muted-foreground mt-1">Выберите экспортированный JSON файл с Token для импорта</p>
                 </div>
                 <div class="rounded-md bg-blue-50 dark:bg-blue-900/20 p-3 border border-blue-200 dark:border-blue-800">
                     <p class="text-xs text-blue-800 dark:text-blue-200">
-                        <strong>说明：</strong>如果邮箱存在则会覆盖更新，不存在则会新增
+                        <strong>Примечание:</strong> Если Email существует, данные будут обновлены, если нет — будут добавлены
                     </p>
                 </div>
             </div>
             <div class="flex items-center justify-end gap-3 p-5 border-t border-border">
-                <button onclick="closeImportModal()" class="inline-flex items-center justify-center rounded-md border border-input bg-background hover:bg-accent h-9 px-5">取消</button>
+                <button onclick="closeImportModal()" class="inline-flex items-center justify-center rounded-md border border-input bg-background hover:bg-accent h-9 px-5">Отмена</button>
                 <button id="importBtn" onclick="submitImportTokens()" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-5">
-                    <span id="importBtnText">导入</span>
+                    <span id="importBtnText">Импортировать</span>
                     <svg id="importBtnSpinner" class="hidden animate-spin h-4 w-4 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -645,56 +645,56 @@
         loadTokens=async()=>{try{const r=await apiRequest('/api/tokens');if(!r)return;allTokens=await r.json();renderTokens()}catch(e){console.error('加载Token失败:',e)}},
         formatExpiry=exp=>{if(!exp)return'-';const d=new Date(exp),now=new Date(),diff=d-now;const dateStr=d.toLocaleDateString('zh-CN',{year:'numeric',month:'2-digit',day:'2-digit'}).replace(/\//g,'-');const timeStr=d.toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit',hour12:false});if(diff<0)return`<span class="text-red-600">${dateStr} ${timeStr}</span>`;const days=Math.floor(diff/864e5);if(days<7)return`<span class="text-orange-600">${dateStr} ${timeStr}</span>`;return`${dateStr} ${timeStr}`},
         formatPlanType=type=>{if(!type)return'-';const typeMap={'chatgpt_team':'Team','chatgpt_plus':'Plus','chatgpt_pro':'Pro','chatgpt_free':'Free'};return typeMap[type]||type},
-        formatSora2=(t)=>{if(t.sora2_supported===true){const remaining=t.sora2_total_count-t.sora2_redeemed_count;const tooltipText=`邀请码: ${t.sora2_invite_code||'无'}\n可用次数: ${remaining}/${t.sora2_total_count}\n已用次数: ${t.sora2_redeemed_count}`;return`<div class="inline-flex items-center gap-1"><span class="inline-flex items-center rounded px-2 py-0.5 text-xs bg-green-50 text-green-700 cursor-pointer" title="${tooltipText}" onclick="copySora2Code('${t.sora2_invite_code||''}')">支持</span><span class="text-xs text-muted-foreground" title="${tooltipText}">${remaining}/${t.sora2_total_count}</span></div>`}else if(t.sora2_supported===false){return`<span class="inline-flex items-center rounded px-2 py-0.5 text-xs bg-gray-100 text-gray-700 cursor-pointer" title="点击使用邀请码激活" onclick="openSora2Modal(${t.id})">不支持</span>`}else{return'-'}},
+        formatSora2=(t)=>{if(t.sora2_supported===true){const remaining=t.sora2_total_count-t.sora2_redeemed_count;const tooltipText=`Код приглашения: ${t.sora2_invite_code||'无'}\nДоступно: ${remaining}/${t.sora2_total_count}\n已用次数: ${t.sora2_redeemed_count}`;return`<div class="inline-flex items-center gap-1"><span class="inline-flex items-center rounded px-2 py-0.5 text-xs bg-green-50 text-green-700 cursor-pointer" title="${tooltipText}" onclick="copySora2Code('${t.sora2_invite_code||''}')">Поддерживается</span><span class="text-xs text-muted-foreground" title="${tooltipText}">${remaining}/${t.sora2_total_count}</span></div>`}else if(t.sora2_supported===false){return`<span class="inline-flex items-center rounded px-2 py-0.5 text-xs bg-gray-100 text-gray-700 cursor-pointer" title="点击使用Код приглашенияАктивировать" onclick="openSora2Modal(${t.id})">不Поддерживается</span>`}else{return'-'}},
         formatPlanTypeWithTooltip=(t)=>{const tooltipText=t.subscription_end?`套餐到期: ${new Date(t.subscription_end).toLocaleDateString('zh-CN',{year:'numeric',month:'2-digit',day:'2-digit'}).replace(/\//g,'-')} ${new Date(t.subscription_end).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit',hour12:false})}`:'';return`<span class="inline-flex items-center rounded px-2 py-0.5 text-xs bg-blue-50 text-blue-700 cursor-pointer" title="${tooltipText||t.plan_title||'-'}">${formatPlanType(t.plan_type)}</span>`},
         formatSora2Remaining=(t)=>{if(t.sora2_supported===true){const remaining=t.sora2_remaining_count||0;return`<span class="text-xs">${remaining}</span>`}else{return'-'}},
-        formatClientId=(clientId)=>{if(!clientId)return'-';const short=clientId.substring(0,8)+'...';return`<span class="text-xs font-mono cursor-pointer hover:text-primary" title="${clientId}" onclick="navigator.clipboard.writeText('${clientId}').then(()=>showToast('已复制','success'))">${short}</span>`},
-        renderTokens=()=>{const tb=$('tokenTableBody');tb.innerHTML=allTokens.map(t=>{const imageDisplay=t.image_enabled?`${t.image_count||0}`:'-';const videoDisplay=(t.video_enabled&&t.sora2_supported)?`${t.video_count||0}`:'-';return`<tr><td class="py-2.5 px-3">${t.email}</td><td class="py-2.5 px-3"><span class="inline-flex items-center rounded px-2 py-0.5 text-xs ${t.is_active?'bg-green-50 text-green-700':'bg-gray-100 text-gray-700'}">${t.is_active?'活跃':'禁用'}</span></td><td class="py-2.5 px-3">${formatClientId(t.client_id)}</td><td class="py-2.5 px-3 text-xs">${formatExpiry(t.expiry_time)}</td><td class="py-2.5 px-3 text-xs">${formatPlanTypeWithTooltip(t)}</td><td class="py-2.5 px-3 text-xs">${formatSora2(t)}</td><td class="py-2.5 px-3">${formatSora2Remaining(t)}</td><td class="py-2.5 px-3">${imageDisplay}</td><td class="py-2.5 px-3">${videoDisplay}</td><td class="py-2.5 px-3">${t.error_count||0}</td><td class="py-2.5 px-3 text-xs text-muted-foreground">${t.remark||'-'}</td><td class="py-2.5 px-3 text-right"><button onclick="testToken(${t.id})" class="inline-flex items-center justify-center rounded-md hover:bg-blue-50 hover:text-blue-700 h-7 px-2 text-xs mr-1">测试</button><button onclick="openEditModal(${t.id})" class="inline-flex items-center justify-center rounded-md hover:bg-green-50 hover:text-green-700 h-7 px-2 text-xs mr-1">编辑</button><button onclick="toggleToken(${t.id},${t.is_active})" class="inline-flex items-center justify-center rounded-md hover:bg-accent h-7 px-2 text-xs mr-1">${t.is_active?'禁用':'启用'}</button><button onclick="deleteToken(${t.id})" class="inline-flex items-center justify-center rounded-md hover:bg-destructive/10 hover:text-destructive h-7 px-2 text-xs">删除</button></td></tr>`}).join('')},
+        formatClientId=(clientId)=>{if(!clientId)return'-';const short=clientId.substring(0,8)+'...';return`<span class="text-xs font-mono cursor-pointer hover:text-primary" title="${clientId}" onclick="navigator.clipboard.writeText('${clientId}').then(()=>showToast('Скопировано','success'))">${short}</span>`},
+        renderTokens=()=>{const tb=$('tokenTableBody');tb.innerHTML=allTokens.map(t=>{const imageDisplay=t.image_enabled?`${t.image_count||0}`:'-';const videoDisplay=(t.video_enabled&&t.sora2_supported)?`${t.video_count||0}`:'-';return`<tr><td class="py-2.5 px-3">${t.email}</td><td class="py-2.5 px-3"><span class="inline-flex items-center rounded px-2 py-0.5 text-xs ${t.is_active?'bg-green-50 text-green-700':'bg-gray-100 text-gray-700'}">${t.is_active?'Активен':'Отключить'}</span></td><td class="py-2.5 px-3">${formatClientId(t.client_id)}</td><td class="py-2.5 px-3 text-xs">${formatExpiry(t.expiry_time)}</td><td class="py-2.5 px-3 text-xs">${formatPlanTypeWithTooltip(t)}</td><td class="py-2.5 px-3 text-xs">${formatSora2(t)}</td><td class="py-2.5 px-3">${formatSora2Remaining(t)}</td><td class="py-2.5 px-3">${imageDisplay}</td><td class="py-2.5 px-3">${videoDisplay}</td><td class="py-2.5 px-3">${t.error_count||0}</td><td class="py-2.5 px-3 text-xs text-muted-foreground">${t.remark||'-'}</td><td class="py-2.5 px-3 text-right"><button onclick="testToken(${t.id})" class="inline-flex items-center justify-center rounded-md hover:bg-blue-50 hover:text-blue-700 h-7 px-2 text-xs mr-1">Тест</button><button onclick="openEditModal(${t.id})" class="inline-flex items-center justify-center rounded-md hover:bg-green-50 hover:text-green-700 h-7 px-2 text-xs mr-1">Редактировать</button><button onclick="toggleToken(${t.id},${t.is_active})" class="inline-flex items-center justify-center rounded-md hover:bg-accent h-7 px-2 text-xs mr-1">${t.is_active?'Отключить':'Включить'}</button><button onclick="deleteToken(${t.id})" class="inline-flex items-center justify-center rounded-md hover:bg-destructive/10 hover:text-destructive h-7 px-2 text-xs">Удалить</button></td></tr>`}).join('')},
         refreshTokens=async()=>{await loadTokens();await loadStats()},
         openAddModal=()=>$('addModal').classList.remove('hidden'),
         closeAddModal=()=>{$('addModal').classList.add('hidden');$('addTokenAT').value='';$('addTokenST').value='';$('addTokenRT').value='';$('addTokenClientId').value='';$('addTokenRemark').value='';$('addTokenImageEnabled').checked=true;$('addTokenVideoEnabled').checked=true;$('addTokenImageConcurrency').value='-1';$('addTokenVideoConcurrency').value='-1';$('addRTRefreshHint').classList.add('hidden')},
         openEditModal=(id)=>{const token=allTokens.find(t=>t.id===id);if(!token)return showToast('Token不存在','error');$('editTokenId').value=token.id;$('editTokenAT').value=token.token||'';$('editTokenST').value=token.st||'';$('editTokenRT').value=token.rt||'';$('editTokenClientId').value=token.client_id||'';$('editTokenRemark').value=token.remark||'';$('editTokenImageEnabled').checked=token.image_enabled!==false;$('editTokenVideoEnabled').checked=token.video_enabled!==false;$('editTokenImageConcurrency').value=token.image_concurrency||'-1';$('editTokenVideoConcurrency').value=token.video_concurrency||'-1';$('editModal').classList.remove('hidden')},
         closeEditModal=()=>{$('editModal').classList.add('hidden');$('editTokenId').value='';$('editTokenAT').value='';$('editTokenST').value='';$('editTokenRT').value='';$('editTokenClientId').value='';$('editTokenRemark').value='';$('editTokenImageEnabled').checked=true;$('editTokenVideoEnabled').checked=true;$('editTokenImageConcurrency').value='';$('editTokenVideoConcurrency').value='';$('editRTRefreshHint').classList.add('hidden')},
-        submitEditToken=async()=>{const id=parseInt($('editTokenId').value),at=$('editTokenAT').value.trim(),st=$('editTokenST').value.trim(),rt=$('editTokenRT').value.trim(),clientId=$('editTokenClientId').value.trim(),remark=$('editTokenRemark').value.trim(),imageEnabled=$('editTokenImageEnabled').checked,videoEnabled=$('editTokenVideoEnabled').checked,imageConcurrency=$('editTokenImageConcurrency').value?parseInt($('editTokenImageConcurrency').value):null,videoConcurrency=$('editTokenVideoConcurrency').value?parseInt($('editTokenVideoConcurrency').value):null;if(!id)return showToast('Token ID无效','error');if(!at)return showToast('请输入 Access Token','error');const btn=$('editTokenBtn'),btnText=$('editTokenBtnText'),btnSpinner=$('editTokenBtnSpinner');btn.disabled=true;btnText.textContent='保存中...';btnSpinner.classList.remove('hidden');try{const r=await apiRequest(`/api/tokens/${id}`,{method:'PUT',body:JSON.stringify({token:at,st:st||null,rt:rt||null,client_id:clientId||null,remark:remark||null,image_enabled:imageEnabled,video_enabled:videoEnabled,image_concurrency:imageConcurrency,video_concurrency:videoConcurrency})});if(!r){btn.disabled=false;btnText.textContent='保存';btnSpinner.classList.add('hidden');return}const d=await r.json();if(d.success){closeEditModal();await refreshTokens();showToast('Token更新成功','success')}else{showToast('更新失败: '+(d.detail||d.message||'未知错误'),'error')}}catch(e){showToast('更新失败: '+e.message,'error')}finally{btn.disabled=false;btnText.textContent='保存';btnSpinner.classList.add('hidden')}},
-        convertST2AT=async()=>{const st=$('addTokenST').value.trim();if(!st)return showToast('请先输入 Session Token','error');try{showToast('正在转换 ST→AT...','info');const r=await apiRequest('/api/tokens/st2at',{method:'POST',body:JSON.stringify({st:st})});if(!r)return;const d=await r.json();if(d.success&&d.access_token){$('addTokenAT').value=d.access_token;showToast('转换成功！AT已自动填入','success')}else{showToast('转换失败: '+(d.message||d.detail||'未知错误'),'error')}}catch(e){showToast('转换失败: '+e.message,'error')}},
-        convertRT2AT=async()=>{const rt=$('addTokenRT').value.trim();if(!rt)return showToast('请先输入 Refresh Token','error');const hint=$('addRTRefreshHint');hint.classList.add('hidden');try{showToast('正在转换 RT→AT...','info');const r=await apiRequest('/api/tokens/rt2at',{method:'POST',body:JSON.stringify({rt:rt})});if(!r)return;const d=await r.json();if(d.success&&d.access_token){$('addTokenAT').value=d.access_token;if(d.refresh_token){$('addTokenRT').value=d.refresh_token;hint.classList.remove('hidden');showToast('转换成功！AT已自动填入，RT已被刷新并更新','success')}else{showToast('转换成功！AT已自动填入','success')}}else{showToast('转换失败: '+(d.message||d.detail||'未知错误'),'error')}}catch(e){showToast('转换失败: '+e.message,'error')}},
-        convertEditST2AT=async()=>{const st=$('editTokenST').value.trim();if(!st)return showToast('请先输入 Session Token','error');try{showToast('正在转换 ST→AT...','info');const r=await apiRequest('/api/tokens/st2at',{method:'POST',body:JSON.stringify({st:st})});if(!r)return;const d=await r.json();if(d.success&&d.access_token){$('editTokenAT').value=d.access_token;showToast('转换成功！AT已自动填入','success')}else{showToast('转换失败: '+(d.message||d.detail||'未知错误'),'error')}}catch(e){showToast('转换失败: '+e.message,'error')}},
-        convertEditRT2AT=async()=>{const rt=$('editTokenRT').value.trim();if(!rt)return showToast('请先输入 Refresh Token','error');const hint=$('editRTRefreshHint');hint.classList.add('hidden');try{showToast('正在转换 RT→AT...','info');const r=await apiRequest('/api/tokens/rt2at',{method:'POST',body:JSON.stringify({rt:rt})});if(!r)return;const d=await r.json();if(d.success&&d.access_token){$('editTokenAT').value=d.access_token;if(d.refresh_token){$('editTokenRT').value=d.refresh_token;hint.classList.remove('hidden');showToast('转换成功！AT已自动填入，RT已被刷新并更新','success')}else{showToast('转换成功！AT已自动填入','success')}}else{showToast('转换失败: '+(d.message||d.detail||'未知错误'),'error')}}catch(e){showToast('转换失败: '+e.message,'error')}},
-        submitAddToken=async()=>{const at=$('addTokenAT').value.trim(),st=$('addTokenST').value.trim(),rt=$('addTokenRT').value.trim(),clientId=$('addTokenClientId').value.trim(),remark=$('addTokenRemark').value.trim(),imageEnabled=$('addTokenImageEnabled').checked,videoEnabled=$('addTokenVideoEnabled').checked,imageConcurrency=parseInt($('addTokenImageConcurrency').value)||(-1),videoConcurrency=parseInt($('addTokenVideoConcurrency').value)||(-1);if(!at)return showToast('请输入 Access Token 或使用 ST/RT 转换','error');const btn=$('addTokenBtn'),btnText=$('addTokenBtnText'),btnSpinner=$('addTokenBtnSpinner');btn.disabled=true;btnText.textContent='添加中...';btnSpinner.classList.remove('hidden');try{const r=await apiRequest('/api/tokens',{method:'POST',body:JSON.stringify({token:at,st:st||null,rt:rt||null,client_id:clientId||null,remark:remark||null,image_enabled:imageEnabled,video_enabled:videoEnabled,image_concurrency:imageConcurrency,video_concurrency:videoConcurrency})});if(!r){btn.disabled=false;btnText.textContent='添加';btnSpinner.classList.add('hidden');return}if(r.status===409){const d=await r.json();const msg=d.detail||'Token 已存在';btn.disabled=false;btnText.textContent='添加';btnSpinner.classList.add('hidden');if(confirm(msg+'\n\n是否删除旧 Token 后重新添加？')){const existingToken=allTokens.find(t=>t.token===at);if(existingToken){const deleted=await deleteToken(existingToken.id,true);if(deleted){showToast('正在重新添加...','info');setTimeout(()=>submitAddToken(),500)}else{showToast('删除旧 Token 失败','error')}}}return}const d=await r.json();if(d.success){closeAddModal();await refreshTokens();showToast('Token添加成功','success')}else{showToast('添加失败: '+(d.detail||d.message||'未知错误'),'error')}}catch(e){showToast('添加失败: '+e.message,'error')}finally{btn.disabled=false;btnText.textContent='添加';btnSpinner.classList.add('hidden')}},
-        testToken=async(id)=>{try{showToast('正在测试Token...','info');const r=await apiRequest(`/api/tokens/${id}/test`,{method:'POST'});if(!r)return;const d=await r.json();if(d.success&&d.status==='success'){let msg=`Token有效！用户: ${d.email||'未知'}`;if(d.sora2_supported){const remaining=d.sora2_total_count-d.sora2_redeemed_count;msg+=`\nSora2: 支持 (${remaining}/${d.sora2_total_count})`;if(d.sora2_remaining_count!==undefined){msg+=`\n可用次数: ${d.sora2_remaining_count}`}}showToast(msg,'success');await refreshTokens()}else{showToast(`Token无效: ${d.message||'未知错误'}`,'error')}}catch(e){showToast('测试失败: '+e.message,'error')}},
-        toggleToken=async(id,isActive)=>{const action=isActive?'disable':'enable';try{const r=await apiRequest(`/api/tokens/${id}/${action}`,{method:'POST'});if(!r)return;const d=await r.json();d.success?(await refreshTokens(),showToast(isActive?'Token已禁用':'Token已启用','success')):showToast('操作失败','error')}catch(e){showToast('操作失败: '+e.message,'error')}},
-        toggleTokenStatus=async(id,active)=>{try{const r=await apiRequest(`/api/tokens/${id}/status`,{method:'PUT',body:JSON.stringify({is_active:active})});if(!r)return;const d=await r.json();d.success?(await refreshTokens(),showToast('状态更新成功','success')):showToast('更新失败','error')}catch(e){showToast('更新失败: '+e.message,'error')}},
-        deleteToken=async(id,skipConfirm=false)=>{if(!skipConfirm&&!confirm('确定要删除这个Token吗?'))return;try{const r=await apiRequest(`/api/tokens/${id}`,{method:'DELETE'});if(!r)return;const d=await r.json();if(d.success){await refreshTokens();if(!skipConfirm)showToast('删除成功','success');return true}else{if(!skipConfirm)showToast('删除失败','error');return false}}catch(e){if(!skipConfirm)showToast('删除失败: '+e.message,'error');return false}},
-        copySora2Code=async(code)=>{if(!code){showToast('没有可复制的邀请码','error');return}try{if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(code);showToast(`邀请码已复制: ${code}`,'success')}else{const textarea=document.createElement('textarea');textarea.value=code;textarea.style.position='fixed';textarea.style.opacity='0';document.body.appendChild(textarea);textarea.select();const success=document.execCommand('copy');document.body.removeChild(textarea);if(success){showToast(`邀请码已复制: ${code}`,'success')}else{showToast('复制失败: 浏览器不支持','error')}}}catch(e){showToast('复制失败: '+e.message,'error')}},
+        submitEditToken=async()=>{const id=parseInt($('editTokenId').value),at=$('editTokenAT').value.trim(),st=$('editTokenST').value.trim(),rt=$('editTokenRT').value.trim(),clientId=$('editTokenClientId').value.trim(),remark=$('editTokenRemark').value.trim(),imageEnabled=$('editTokenImageEnabled').checked,videoEnabled=$('editTokenVideoEnabled').checked,imageConcurrency=$('editTokenImageConcurrency').value?parseInt($('editTokenImageConcurrency').value):null,videoConcurrency=$('editTokenVideoConcurrency').value?parseInt($('editTokenVideoConcurrency').value):null;if(!id)return showToast('Token ID无效','error');if(!at)return showToast('请输入 Access Token','error');const btn=$('editTokenBtn'),btnText=$('editTokenBtnText'),btnSpinner=$('editTokenBtnSpinner');btn.disabled=true;btnText.textContent='Сохранить中...';btnSpinner.classList.remove('hidden');try{const r=await apiRequest(`/api/tokens/${id}`,{method:'PUT',body:JSON.stringify({token:at,st:st||null,rt:rt||null,client_id:clientId||null,remark:remark||null,image_enabled:imageEnabled,video_enabled:videoEnabled,image_concurrency:imageConcurrency,video_concurrency:videoConcurrency})});if(!r){btn.disabled=false;btnText.textContent='Сохранить';btnSpinner.classList.add('hidden');return}const d=await r.json();if(d.success){closeEditModal();await refreshTokens();showToast('Token更新成功','success')}else{showToast('更新失败: '+(d.detail||d.message||'未知Ошибки'),'error')}}catch(e){showToast('更新失败: '+e.message,'error')}finally{btn.disabled=false;btnText.textContent='Сохранить';btnSpinner.classList.add('hidden')}},
+        convertST2AT=async()=>{const st=$('addTokenST').value.trim();if(!st)return showToast('请先输入 Session Token','error');try{showToast('正在Конвертировать ST→AT...','info');const r=await apiRequest('/api/tokens/st2at',{method:'POST',body:JSON.stringify({st:st})});if(!r)return;const d=await r.json();if(d.success&&d.access_token){$('addTokenAT').value=d.access_token;showToast('Конвертировать成功！AT已自动填入','success')}else{showToast('Конвертировать失败: '+(d.message||d.detail||'未知Ошибки'),'error')}}catch(e){showToast('Конвертировать失败: '+e.message,'error')}},
+        convertRT2AT=async()=>{const rt=$('addTokenRT').value.trim();if(!rt)return showToast('请先输入 Refresh Token','error');const hint=$('addRTRefreshHint');hint.classList.add('hidden');try{showToast('正在Конвертировать RT→AT...','info');const r=await apiRequest('/api/tokens/rt2at',{method:'POST',body:JSON.stringify({rt:rt})});if(!r)return;const d=await r.json();if(d.success&&d.access_token){$('addTokenAT').value=d.access_token;if(d.refresh_token){$('addTokenRT').value=d.refresh_token;hint.classList.remove('hidden');showToast('Конвертировать成功！AT已自动填入，RT已被刷新并更新','success')}else{showToast('Конвертировать成功！AT已自动填入','success')}}else{showToast('Конвертировать失败: '+(d.message||d.detail||'未知Ошибки'),'error')}}catch(e){showToast('Конвертировать失败: '+e.message,'error')}},
+        convertEditST2AT=async()=>{const st=$('editTokenST').value.trim();if(!st)return showToast('请先输入 Session Token','error');try{showToast('正在Конвертировать ST→AT...','info');const r=await apiRequest('/api/tokens/st2at',{method:'POST',body:JSON.stringify({st:st})});if(!r)return;const d=await r.json();if(d.success&&d.access_token){$('editTokenAT').value=d.access_token;showToast('Конвертировать成功！AT已自动填入','success')}else{showToast('Конвертировать失败: '+(d.message||d.detail||'未知Ошибки'),'error')}}catch(e){showToast('Конвертировать失败: '+e.message,'error')}},
+        convertEditRT2AT=async()=>{const rt=$('editTokenRT').value.trim();if(!rt)return showToast('请先输入 Refresh Token','error');const hint=$('editRTRefreshHint');hint.classList.add('hidden');try{showToast('正在Конвертировать RT→AT...','info');const r=await apiRequest('/api/tokens/rt2at',{method:'POST',body:JSON.stringify({rt:rt})});if(!r)return;const d=await r.json();if(d.success&&d.access_token){$('editTokenAT').value=d.access_token;if(d.refresh_token){$('editTokenRT').value=d.refresh_token;hint.classList.remove('hidden');showToast('Конвертировать成功！AT已自动填入，RT已被刷新并更新','success')}else{showToast('Конвертировать成功！AT已自动填入','success')}}else{showToast('Конвертировать失败: '+(d.message||d.detail||'未知Ошибки'),'error')}}catch(e){showToast('Конвертировать失败: '+e.message,'error')}},
+        submitAddToken=async()=>{const at=$('addTokenAT').value.trim(),st=$('addTokenST').value.trim(),rt=$('addTokenRT').value.trim(),clientId=$('addTokenClientId').value.trim(),remark=$('addTokenRemark').value.trim(),imageEnabled=$('addTokenImageEnabled').checked,videoEnabled=$('addTokenVideoEnabled').checked,imageConcurrency=parseInt($('addTokenImageConcurrency').value)||(-1),videoConcurrency=parseInt($('addTokenVideoConcurrency').value)||(-1);if(!at)return showToast('请输入 Access Token 或使用 ST/RT Конвертировать','error');const btn=$('addTokenBtn'),btnText=$('addTokenBtnText'),btnSpinner=$('addTokenBtnSpinner');btn.disabled=true;btnText.textContent='Добавить中...';btnSpinner.classList.remove('hidden');try{const r=await apiRequest('/api/tokens',{method:'POST',body:JSON.stringify({token:at,st:st||null,rt:rt||null,client_id:clientId||null,remark:remark||null,image_enabled:imageEnabled,video_enabled:videoEnabled,image_concurrency:imageConcurrency,video_concurrency:videoConcurrency})});if(!r){btn.disabled=false;btnText.textContent='Добавить';btnSpinner.classList.add('hidden');return}if(r.status===409){const d=await r.json();const msg=d.detail||'Token 已存在';btn.disabled=false;btnText.textContent='Добавить';btnSpinner.classList.add('hidden');if(confirm(msg+'\n\n是否Удалить旧 Token 后重新Добавить？')){const existingToken=allTokens.find(t=>t.token===at);if(existingToken){const deleted=await deleteToken(existingToken.id,true);if(deleted){showToast('正在重新Добавить...','info');setTimeout(()=>submitAddToken(),500)}else{showToast('Удалить旧 Token 失败','error')}}}return}const d=await r.json();if(d.success){closeAddModal();await refreshTokens();showToast('TokenДобавить成功','success')}else{showToast('Добавить失败: '+(d.detail||d.message||'未知Ошибки'),'error')}}catch(e){showToast('Добавить失败: '+e.message,'error')}finally{btn.disabled=false;btnText.textContent='Добавить';btnSpinner.classList.add('hidden')}},
+        testToken=async(id)=>{try{showToast('正在ТестToken...','info');const r=await apiRequest(`/api/tokens/${id}/test`,{method:'POST'});if(!r)return;const d=await r.json();if(d.success&&d.status==='success'){let msg=`Token有效！用户: ${d.email||'未知'}`;if(d.sora2_supported){const remaining=d.sora2_total_count-d.sora2_redeemed_count;msg+=`\nSora2: Поддерживается (${remaining}/${d.sora2_total_count})`;if(d.sora2_remaining_count!==undefined){msg+=`\nДоступно: ${d.sora2_remaining_count}`}}showToast(msg,'success');await refreshTokens()}else{showToast(`Token无效: ${d.message||'未知Ошибки'}`,'error')}}catch(e){showToast('Тест失败: '+e.message,'error')}},
+        toggleToken=async(id,isActive)=>{const action=isActive?'disable':'enable';try{const r=await apiRequest(`/api/tokens/${id}/${action}`,{method:'POST'});if(!r)return;const d=await r.json();d.success?(await refreshTokens(),showToast(isActive?'Token已Отключить':'Token已Включить','success')):showToast('Действия失败','error')}catch(e){showToast('Действия失败: '+e.message,'error')}},
+        toggleTokenStatus=async(id,active)=>{try{const r=await apiRequest(`/api/tokens/${id}/status`,{method:'PUT',body:JSON.stringify({is_active:active})});if(!r)return;const d=await r.json();d.success?(await refreshTokens(),showToast('Статус更新成功','success')):showToast('更新失败','error')}catch(e){showToast('更新失败: '+e.message,'error')}},
+        deleteToken=async(id,skipConfirm=false)=>{if(!skipConfirm&&!confirm('ОК要Удалить这个Token吗?'))return;try{const r=await apiRequest(`/api/tokens/${id}`,{method:'DELETE'});if(!r)return;const d=await r.json();if(d.success){await refreshTokens();if(!skipConfirm)showToast('Удалить成功','success');return true}else{if(!skipConfirm)showToast('Удалить失败','error');return false}}catch(e){if(!skipConfirm)showToast('Удалить失败: '+e.message,'error');return false}},
+        copySora2Code=async(code)=>{if(!code){showToast('没有可复制的Код приглашения','error');return}try{if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(code);showToast(`Код приглашенияСкопировано: ${code}`,'success')}else{const textarea=document.createElement('textarea');textarea.value=code;textarea.style.position='fixed';textarea.style.opacity='0';document.body.appendChild(textarea);textarea.select();const success=document.execCommand('copy');document.body.removeChild(textarea);if(success){showToast(`Код приглашенияСкопировано: ${code}`,'success')}else{showToast('复制失败: 浏览器不Поддерживается','error')}}}catch(e){showToast('复制失败: '+e.message,'error')}},
         openSora2Modal=(id)=>{$('sora2TokenId').value=id;$('sora2InviteCode').value='';$('sora2Modal').classList.remove('hidden')},
         closeSora2Modal=()=>{$('sora2Modal').classList.add('hidden');$('sora2TokenId').value='';$('sora2InviteCode').value=''},
         openImportModal=()=>{$('importModal').classList.remove('hidden');$('importFile').value=''},
         closeImportModal=()=>{$('importModal').classList.add('hidden');$('importFile').value=''},
         exportTokens=()=>{if(allTokens.length===0){showToast('没有Token可导出','error');return}const exportData=allTokens.map(t=>({email:t.email,access_token:t.token,session_token:t.st||null,refresh_token:t.rt||null,is_active:t.is_active,image_enabled:t.image_enabled!==false,video_enabled:t.video_enabled!==false,image_concurrency:t.image_concurrency||(-1),video_concurrency:t.video_concurrency||(-1)}));const dataStr=JSON.stringify(exportData,null,2);const dataBlob=new Blob([dataStr],{type:'application/json'});const url=URL.createObjectURL(dataBlob);const link=document.createElement('a');link.href=url;link.download=`tokens_${new Date().toISOString().split('T')[0]}.json`;document.body.appendChild(link);link.click();document.body.removeChild(link);URL.revokeObjectURL(url);showToast(`已导出 ${allTokens.length} 个Token`,'success')},
-        submitImportTokens=async()=>{const fileInput=$('importFile');if(!fileInput.files||fileInput.files.length===0){showToast('请选择文件','error');return}const file=fileInput.files[0];if(!file.name.endsWith('.json')){showToast('请选择JSON文件','error');return}try{const fileContent=await file.text();const importData=JSON.parse(fileContent);if(!Array.isArray(importData)){showToast('JSON格式错误：应为数组','error');return}if(importData.length===0){showToast('JSON文件为空','error');return}const btn=$('importBtn'),btnText=$('importBtnText'),btnSpinner=$('importBtnSpinner');btn.disabled=true;btnText.textContent='导入中...';btnSpinner.classList.remove('hidden');try{const r=await apiRequest('/api/tokens/import',{method:'POST',body:JSON.stringify({tokens:importData})});if(!r){btn.disabled=false;btnText.textContent='导入';btnSpinner.classList.add('hidden');return}const d=await r.json();if(d.success){closeImportModal();await refreshTokens();const msg=`导入成功！新增: ${d.added||0}, 更新: ${d.updated||0}`;showToast(msg,'success')}else{showToast('导入失败: '+(d.detail||d.message||'未知错误'),'error')}}catch(e){showToast('导入失败: '+e.message,'error')}finally{btn.disabled=false;btnText.textContent='导入';btnSpinner.classList.add('hidden')}}catch(e){showToast('文件解析失败: '+e.message,'error')}},
-        submitSora2Activate=async()=>{const tokenId=parseInt($('sora2TokenId').value),inviteCode=$('sora2InviteCode').value.trim();if(!tokenId)return showToast('Token ID无效','error');if(!inviteCode)return showToast('请输入邀请码','error');if(inviteCode.length!==6)return showToast('邀请码必须是6位','error');const btn=$('sora2ActivateBtn'),btnText=$('sora2ActivateBtnText'),btnSpinner=$('sora2ActivateBtnSpinner');btn.disabled=true;btnText.textContent='激活中...';btnSpinner.classList.remove('hidden');try{showToast('正在激活Sora2...','info');const r=await apiRequest(`/api/tokens/${tokenId}/sora2/activate?invite_code=${inviteCode}`,{method:'POST'});if(!r){btn.disabled=false;btnText.textContent='激活';btnSpinner.classList.add('hidden');return}const d=await r.json();if(d.success){closeSora2Modal();await refreshTokens();if(d.already_accepted){showToast('Sora2已激活（之前已接受）','success')}else{showToast(`Sora2激活成功！邀请码: ${d.invite_code||'无'}`,'success')}}else{showToast('激活失败: '+(d.message||'未知错误'),'error')}}catch(e){showToast('激活失败: '+e.message,'error')}finally{btn.disabled=false;btnText.textContent='激活';btnSpinner.classList.add('hidden')}},
+        submitImportTokens=async()=>{const fileInput=$('importFile');if(!fileInput.files||fileInput.files.length===0){showToast('请Выберите файл','error');return}const file=fileInput.files[0];if(!file.name.endsWith('.json')){showToast('请选择JSON文件','error');return}try{const fileContent=await file.text();const importData=JSON.parse(fileContent);if(!Array.isArray(importData)){showToast('JSON格式Ошибки：应为数组','error');return}if(importData.length===0){showToast('JSON文件为空','error');return}const btn=$('importBtn'),btnText=$('importBtnText'),btnSpinner=$('importBtnSpinner');btn.disabled=true;btnText.textContent='Импортировать中...';btnSpinner.classList.remove('hidden');try{const r=await apiRequest('/api/tokens/import',{method:'POST',body:JSON.stringify({tokens:importData})});if(!r){btn.disabled=false;btnText.textContent='Импортировать';btnSpinner.classList.add('hidden');return}const d=await r.json();if(d.success){closeImportModal();await refreshTokens();const msg=`Импортировать成功！新增: ${d.added||0}, 更新: ${d.updated||0}`;showToast(msg,'success')}else{showToast('Импортировать失败: '+(d.detail||d.message||'未知Ошибки'),'error')}}catch(e){showToast('Импортировать失败: '+e.message,'error')}finally{btn.disabled=false;btnText.textContent='Импортировать';btnSpinner.classList.add('hidden')}}catch(e){showToast('文件解析失败: '+e.message,'error')}},
+        submitSora2Activate=async()=>{const tokenId=parseInt($('sora2TokenId').value),inviteCode=$('sora2InviteCode').value.trim();if(!tokenId)return showToast('Token ID无效','error');if(!inviteCode)return showToast('请输入Код приглашения','error');if(inviteCode.length!==6)return showToast('Код приглашения必须是6位','error');const btn=$('sora2ActivateBtn'),btnText=$('sora2ActivateBtnText'),btnSpinner=$('sora2ActivateBtnSpinner');btn.disabled=true;btnText.textContent='Активировать中...';btnSpinner.classList.remove('hidden');try{showToast('正在АктивироватьSora2...','info');const r=await apiRequest(`/api/tokens/${tokenId}/sora2/activate?invite_code=${inviteCode}`,{method:'POST'});if(!r){btn.disabled=false;btnText.textContent='Активировать';btnSpinner.classList.add('hidden');return}const d=await r.json();if(d.success){closeSora2Modal();await refreshTokens();if(d.already_accepted){showToast('Sora2已Активировать（之前已接受）','success')}else{showToast(`Sora2Активировать成功！Код приглашения: ${d.invite_code||'无'}`,'success')}}else{showToast('Активировать失败: '+(d.message||'未知Ошибки'),'error')}}catch(e){showToast('Активировать失败: '+e.message,'error')}finally{btn.disabled=false;btnText.textContent='Активировать';btnSpinner.classList.add('hidden')}},
         loadAdminConfig=async()=>{try{const r=await apiRequest('/api/admin/config');if(!r)return;const d=await r.json();$('cfgErrorBan').value=d.error_ban_threshold||3;$('cfgAdminUsername').value=d.admin_username||'admin';$('cfgCurrentAPIKey').value=d.api_key||'';$('cfgDebugEnabled').checked=d.debug_enabled||false}catch(e){console.error('加载配置失败:',e)}},
-        saveAdminConfig=async()=>{try{const r=await apiRequest('/api/admin/config',{method:'POST',body:JSON.stringify({error_ban_threshold:parseInt($('cfgErrorBan').value)||3})});if(!r)return;const d=await r.json();d.success?showToast('配置保存成功','success'):showToast('保存失败','error')}catch(e){showToast('保存失败: '+e.message,'error')}},
-        updateAdminPassword=async()=>{const username=$('cfgAdminUsername').value.trim(),oldPwd=$('cfgOldPassword').value.trim(),newPwd=$('cfgNewPassword').value.trim();if(!oldPwd||!newPwd)return showToast('请输入旧密码和新密码','error');if(newPwd.length<4)return showToast('新密码至少4个字符','error');try{const r=await apiRequest('/api/admin/password',{method:'POST',body:JSON.stringify({username:username||undefined,old_password:oldPwd,new_password:newPwd})});if(!r)return;const d=await r.json();if(d.success){showToast('密码修改成功，请重新登录','success');setTimeout(()=>{localStorage.removeItem('adminToken');location.href='/login'},2000)}else{showToast('修改失败: '+(d.detail||'未知错误'),'error')}}catch(e){showToast('修改失败: '+e.message,'error')}},
-        updateAPIKey=async()=>{const newKey=$('cfgNewAPIKey').value.trim();if(!newKey)return showToast('请输入新的 API Key','error');if(newKey.length<6)return showToast('API Key 至少6个字符','error');if(!confirm('确定要更新 API Key 吗？更新后需要通知所有客户端使用新密钥。'))return;try{const r=await apiRequest('/api/admin/apikey',{method:'POST',body:JSON.stringify({new_api_key:newKey})});if(!r)return;const d=await r.json();if(d.success){showToast('API Key 更新成功','success');$('cfgCurrentAPIKey').value=newKey;$('cfgNewAPIKey').value=''}else{showToast('更新失败: '+(d.detail||'未知错误'),'error')}}catch(e){showToast('更新失败: '+e.message,'error')}},
-        toggleDebugMode=async()=>{const enabled=$('cfgDebugEnabled').checked;try{const r=await apiRequest('/api/admin/debug',{method:'POST',body:JSON.stringify({enabled:enabled})});if(!r)return;const d=await r.json();if(d.success){showToast(enabled?'调试模式已开启':'调试模式已关闭','success')}else{showToast('操作失败: '+(d.detail||'未知错误'),'error');$('cfgDebugEnabled').checked=!enabled}}catch(e){showToast('操作失败: '+e.message,'error');$('cfgDebugEnabled').checked=!enabled}},
-        loadProxyConfig=async()=>{try{const r=await apiRequest('/api/proxy/config');if(!r)return;const d=await r.json();$('cfgProxyEnabled').checked=d.proxy_enabled||false;$('cfgProxyUrl').value=d.proxy_url||''}catch(e){console.error('加载代理配置失败:',e)}},
-        saveProxyConfig=async()=>{try{const r=await apiRequest('/api/proxy/config',{method:'POST',body:JSON.stringify({proxy_enabled:$('cfgProxyEnabled').checked,proxy_url:$('cfgProxyUrl').value.trim()})});if(!r)return;const d=await r.json();d.success?showToast('代理配置保存成功','success'):showToast('保存失败','error')}catch(e){showToast('保存失败: '+e.message,'error')}},
-        loadWatermarkFreeConfig=async()=>{try{const r=await apiRequest('/api/watermark-free/config');if(!r)return;const d=await r.json();$('cfgWatermarkFreeEnabled').checked=d.watermark_free_enabled||false;$('cfgParseMethod').value=d.parse_method||'third_party';$('cfgCustomParseUrl').value=d.custom_parse_url||'';$('cfgCustomParseToken').value=d.custom_parse_token||'';toggleWatermarkFreeOptions();toggleCustomParseOptions()}catch(e){console.error('加载无水印模式配置失败:',e)}},
-        saveWatermarkFreeConfig=async()=>{try{const enabled=$('cfgWatermarkFreeEnabled').checked,parseMethod=$('cfgParseMethod').value,customUrl=$('cfgCustomParseUrl').value.trim(),customToken=$('cfgCustomParseToken').value.trim();if(enabled&&parseMethod==='custom'){if(!customUrl)return showToast('请输入解析服务器地址','error');if(!customToken)return showToast('请输入访问密钥','error')}const r=await apiRequest('/api/watermark-free/config',{method:'POST',body:JSON.stringify({watermark_free_enabled:enabled,parse_method:parseMethod,custom_parse_url:customUrl||null,custom_parse_token:customToken||null})});if(!r)return;const d=await r.json();d.success?showToast('无水印模式配置保存成功','success'):showToast('保存失败','error')}catch(e){showToast('保存失败: '+e.message,'error')}},
+        saveAdminConfig=async()=>{try{const r=await apiRequest('/api/admin/config',{method:'POST',body:JSON.stringify({error_ban_threshold:parseInt($('cfgErrorBan').value)||3})});if(!r)return;const d=await r.json();d.success?showToast('配置Сохранить成功','success'):showToast('Сохранить失败','error')}catch(e){showToast('Сохранить失败: '+e.message,'error')}},
+        updateAdminPassword=async()=>{const username=$('cfgAdminUsername').value.trim(),oldPwd=$('cfgOldPassword').value.trim(),newPwd=$('cfgNewPassword').value.trim();if(!oldPwd||!newPwd)return showToast('请输入Старый пароль和Новый пароль','error');if(newPwd.length<4)return showToast('Новый пароль至少4个字符','error');try{const r=await apiRequest('/api/admin/password',{method:'POST',body:JSON.stringify({username:username||undefined,old_password:oldPwd,new_password:newPwd})});if(!r)return;const d=await r.json();if(d.success){showToast('密码Изменить成功，请重新登录','success');setTimeout(()=>{localStorage.removeItem('adminToken');location.href='/login'},2000)}else{showToast('Изменить失败: '+(d.detail||'未知Ошибки'),'error')}}catch(e){showToast('Изменить失败: '+e.message,'error')}},
+        updateAPIKey=async()=>{const newKey=$('cfgNewAPIKey').value.trim();if(!newKey)return showToast('请Введите новый API ключ','error');if(newKey.length<6)return showToast('API Key 至少6个字符','error');if(!confirm('ОК要更Новый API ключ 吗？更新后需要通知所有客户端使用新密钥。'))return;try{const r=await apiRequest('/api/admin/apikey',{method:'POST',body:JSON.stringify({new_api_key:newKey})});if(!r)return;const d=await r.json();if(d.success){showToast('API Key 更新成功','success');$('cfgCurrentAPIKey').value=newKey;$('cfgNewAPIKey').value=''}else{showToast('更新失败: '+(d.detail||'未知Ошибки'),'error')}}catch(e){showToast('更新失败: '+e.message,'error')}},
+        toggleDebugMode=async()=>{const enabled=$('cfgDebugEnabled').checked;try{const r=await apiRequest('/api/admin/debug',{method:'POST',body:JSON.stringify({enabled:enabled})});if(!r)return;const d=await r.json();if(d.success){showToast(enabled?'调试模式已开启':'调试模式已Закрыть','success')}else{showToast('Действия失败: '+(d.detail||'未知Ошибки'),'error');$('cfgDebugEnabled').checked=!enabled}}catch(e){showToast('Действия失败: '+e.message,'error');$('cfgDebugEnabled').checked=!enabled}},
+        loadProxyConfig=async()=>{try{const r=await apiRequest('/api/proxy/config');if(!r)return;const d=await r.json();$('cfgProxyEnabled').checked=d.proxy_enabled||false;$('cfgProxyUrl').value=d.proxy_url||''}catch(e){console.error('加载Настройка прокси失败:',e)}},
+        saveProxyConfig=async()=>{try{const r=await apiRequest('/api/proxy/config',{method:'POST',body:JSON.stringify({proxy_enabled:$('cfgProxyEnabled').checked,proxy_url:$('cfgProxyUrl').value.trim()})});if(!r)return;const d=await r.json();d.success?showToast('Настройка проксиСохранить成功','success'):showToast('Сохранить失败','error')}catch(e){showToast('Сохранить失败: '+e.message,'error')}},
+        loadWatermarkFreeConfig=async()=>{try{const r=await apiRequest('/api/watermark-free/config');if(!r)return;const d=await r.json();$('cfgWatermarkFreeEnabled').checked=d.watermark_free_enabled||false;$('cfgParseMethod').value=d.parse_method||'third_party';$('cfgCustomParseUrl').value=d.custom_parse_url||'';$('cfgCustomParseToken').value=d.custom_parse_token||'';toggleWatermarkFreeOptions();toggleCustomParseOptions()}catch(e){console.error('加载Настройка режима без водяных знаков失败:',e)}},
+        saveWatermarkFreeConfig=async()=>{try{const enabled=$('cfgWatermarkFreeEnabled').checked,parseMethod=$('cfgParseMethod').value,customUrl=$('cfgCustomParseUrl').value.trim(),customToken=$('cfgCustomParseToken').value.trim();if(enabled&&parseMethod==='custom'){if(!customUrl)return showToast('请输入解析服务器地址','error');if(!customToken)return showToast('请输入访问密钥','error')}const r=await apiRequest('/api/watermark-free/config',{method:'POST',body:JSON.stringify({watermark_free_enabled:enabled,parse_method:parseMethod,custom_parse_url:customUrl||null,custom_parse_token:customToken||null})});if(!r)return;const d=await r.json();d.success?showToast('Настройка режима без водяных знаковСохранить成功','success'):showToast('Сохранить失败','error')}catch(e){showToast('Сохранить失败: '+e.message,'error')}},
         toggleWatermarkFreeOptions=()=>{const enabled=$('cfgWatermarkFreeEnabled').checked;$('watermarkFreeOptions').style.display=enabled?'block':'none'},
         toggleCustomParseOptions=()=>{const method=$('cfgParseMethod').value;$('customParseOptions').style.display=method==='custom'?'block':'none'},
         toggleCacheOptions=()=>{const enabled=$('cfgCacheEnabled').checked;$('cacheOptions').style.display=enabled?'block':'none'},
-        loadCacheConfig=async()=>{try{console.log('开始加载缓存配置...');const r=await apiRequest('/api/cache/config');if(!r){console.error('API请求失败');return}const d=await r.json();console.log('缓存配置数据:',d);if(d.success&&d.config){const enabled=d.config.enabled!==false;const timeout=d.config.timeout||7200;const baseUrl=d.config.base_url||'';const effectiveUrl=d.config.effective_base_url||'';console.log('设置缓存启用:',enabled);console.log('设置超时时间:',timeout);console.log('设置域名:',baseUrl);console.log('生效URL:',effectiveUrl);$('cfgCacheEnabled').checked=enabled;$('cfgCacheTimeout').value=timeout;$('cfgCacheBaseUrl').value=baseUrl;if(effectiveUrl){$('cacheEffectiveUrlValue').textContent=effectiveUrl;$('cacheEffectiveUrl').classList.remove('hidden')}else{$('cacheEffectiveUrl').classList.add('hidden')}toggleCacheOptions();console.log('缓存配置加载成功')}else{console.error('缓存配置数据格式错误:',d)}}catch(e){console.error('加载缓存配置失败:',e);showToast('加载缓存配置失败: '+e.message,'error')}},
-        loadGenerationTimeout=async()=>{try{console.log('开始加载生成超时配置...');const r=await apiRequest('/api/generation/timeout');if(!r){console.error('API请求失败');return}const d=await r.json();console.log('生成超时配置数据:',d);if(d.success&&d.config){const imageTimeout=d.config.image_timeout||300;const videoTimeout=d.config.video_timeout||1500;console.log('设置图片超时:',imageTimeout);console.log('设置视频超时:',videoTimeout);$('cfgImageTimeout').value=imageTimeout;$('cfgVideoTimeout').value=videoTimeout;console.log('生成超时配置加载成功')}else{console.error('生成超时配置数据格式错误:',d)}}catch(e){console.error('加载生成超时配置失败:',e);showToast('加载生成超时配置失败: '+e.message,'error')}},
-        saveCacheConfig=async()=>{const enabled=$('cfgCacheEnabled').checked,timeout=parseInt($('cfgCacheTimeout').value)||7200,baseUrl=$('cfgCacheBaseUrl').value.trim();console.log('保存缓存配置:',{enabled,timeout,baseUrl});if(timeout<60||timeout>86400)return showToast('缓存超时时间必须在 60-86400 秒之间','error');if(baseUrl&&!baseUrl.startsWith('http://')&&!baseUrl.startsWith('https://'))return showToast('域名必须以 http:// 或 https:// 开头','error');try{console.log('保存缓存启用状态...');const r0=await apiRequest('/api/cache/enabled',{method:'POST',body:JSON.stringify({enabled:enabled})});if(!r0){console.error('保存缓存启用状态请求失败');return}const d0=await r0.json();console.log('缓存启用状态保存结果:',d0);if(!d0.success){console.error('保存缓存启用状态失败:',d0);return showToast('保存缓存启用状态失败','error')}console.log('保存超时时间...');const r1=await apiRequest('/api/cache/config',{method:'POST',body:JSON.stringify({timeout:timeout})});if(!r1){console.error('保存超时时间请求失败');return}const d1=await r1.json();console.log('超时时间保存结果:',d1);if(!d1.success){console.error('保存超时时间失败:',d1);return showToast('保存超时时间失败','error')}console.log('保存域名...');const r2=await apiRequest('/api/cache/base-url',{method:'POST',body:JSON.stringify({base_url:baseUrl})});if(!r2){console.error('保存域名请求失败');return}const d2=await r2.json();console.log('域名保存结果:',d2);if(d2.success){showToast('缓存配置保存成功','success');console.log('等待配置文件写入完成...');await new Promise(r=>setTimeout(r,200));console.log('重新加载配置...');await loadCacheConfig()}else{console.error('保存域名失败:',d2);showToast('保存域名失败','error')}}catch(e){console.error('保存失败:',e);showToast('保存失败: '+e.message,'error')}},
-        saveGenerationTimeout=async()=>{const imageTimeout=parseInt($('cfgImageTimeout').value)||300,videoTimeout=parseInt($('cfgVideoTimeout').value)||1500;console.log('保存生成超时配置:',{imageTimeout,videoTimeout});if(imageTimeout<60||imageTimeout>3600)return showToast('图片超时时间必须在 60-3600 秒之间','error');if(videoTimeout<60||videoTimeout>7200)return showToast('视频超时时间必须在 60-7200 秒之间','error');try{const r=await apiRequest('/api/generation/timeout',{method:'POST',body:JSON.stringify({image_timeout:imageTimeout,video_timeout:videoTimeout})});if(!r){console.error('保存请求失败');return}const d=await r.json();console.log('保存结果:',d);if(d.success){showToast('生成超时配置保存成功','success');await new Promise(r=>setTimeout(r,200));await loadGenerationTimeout()}else{console.error('保存失败:',d);showToast('保存失败','error')}}catch(e){console.error('保存失败:',e);showToast('保存失败: '+e.message,'error')}},
-        toggleATAutoRefresh=async()=>{try{const enabled=$('atAutoRefreshToggle').checked;const r=await apiRequest('/api/token-refresh/enabled',{method:'POST',body:JSON.stringify({enabled:enabled})});if(!r){$('atAutoRefreshToggle').checked=!enabled;return}const d=await r.json();if(d.success){showToast(enabled?'AT自动刷新已启用':'AT自动刷新已禁用','success')}else{showToast('操作失败: '+(d.detail||'未知错误'),'error');$('atAutoRefreshToggle').checked=!enabled}}catch(e){showToast('操作失败: '+e.message,'error');$('atAutoRefreshToggle').checked=!enabled}},
-        loadATAutoRefreshConfig=async()=>{try{const r=await apiRequest('/api/token-refresh/config');if(!r)return;const d=await r.json();if(d.success&&d.config){$('atAutoRefreshToggle').checked=d.config.at_auto_refresh_enabled||false}else{console.error('AT自动刷新配置数据格式错误:',d)}}catch(e){console.error('加载AT自动刷新配置失败:',e)}},
+        loadCacheConfig=async()=>{try{console.log('开始加载Настройка кэша...');const r=await apiRequest('/api/cache/config');if(!r){console.error('API请求失败');return}const d=await r.json();console.log('Настройка кэша数据:',d);if(d.success&&d.config){const enabled=d.config.enabled!==false;const timeout=d.config.timeout||7200;const baseUrl=d.config.base_url||'';const effectiveUrl=d.config.effective_base_url||'';console.log('设置缓存Включить:',enabled);console.log('设置超时时间:',timeout);console.log('设置域名:',baseUrl);console.log('生效URL:',effectiveUrl);$('cfgCacheEnabled').checked=enabled;$('cfgCacheTimeout').value=timeout;$('cfgCacheBaseUrl').value=baseUrl;if(effectiveUrl){$('cacheEffectiveUrlValue').textContent=effectiveUrl;$('cacheEffectiveUrl').classList.remove('hidden')}else{$('cacheEffectiveUrl').classList.add('hidden')}toggleCacheOptions();console.log('Настройка кэша加载成功')}else{console.error('Настройка кэша数据格式Ошибки:',d)}}catch(e){console.error('加载Настройка кэша失败:',e);showToast('加载Настройка кэша失败: '+e.message,'error')}},
+        loadGenerationTimeout=async()=>{try{console.log('开始加载Настройка таймаутов генерации...');const r=await apiRequest('/api/generation/timeout');if(!r){console.error('API请求失败');return}const d=await r.json();console.log('Настройка таймаутов генерации数据:',d);if(d.success&&d.config){const imageTimeout=d.config.image_timeout||300;const videoTimeout=d.config.video_timeout||1500;console.log('设置Изображения超时:',imageTimeout);console.log('设置Видео超时:',videoTimeout);$('cfgImageTimeout').value=imageTimeout;$('cfgVideoTimeout').value=videoTimeout;console.log('Настройка таймаутов генерации加载成功')}else{console.error('Настройка таймаутов генерации数据格式Ошибки:',d)}}catch(e){console.error('加载Настройка таймаутов генерации失败:',e);showToast('加载Настройка таймаутов генерации失败: '+e.message,'error')}},
+        saveCacheConfig=async()=>{const enabled=$('cfgCacheEnabled').checked,timeout=parseInt($('cfgCacheTimeout').value)||7200,baseUrl=$('cfgCacheBaseUrl').value.trim();console.log('СохранитьНастройка кэша:',{enabled,timeout,baseUrl});if(timeout<60||timeout>86400)return showToast('Время хранения кэша必须在 60-86400 секунд之间','error');if(baseUrl&&!baseUrl.startsWith('http://')&&!baseUrl.startsWith('https://'))return showToast('域名必须以 http:// 或 https:// 开头','error');try{console.log('Сохранить缓存ВключитьСтатус...');const r0=await apiRequest('/api/cache/enabled',{method:'POST',body:JSON.stringify({enabled:enabled})});if(!r0){console.error('Сохранить缓存ВключитьСтатус请求失败');return}const d0=await r0.json();console.log('缓存ВключитьСтатусСохранить结果:',d0);if(!d0.success){console.error('Сохранить缓存ВключитьСтатус失败:',d0);return showToast('Сохранить缓存ВключитьСтатус失败','error')}console.log('Сохранить超时时间...');const r1=await apiRequest('/api/cache/config',{method:'POST',body:JSON.stringify({timeout:timeout})});if(!r1){console.error('Сохранить超时时间请求失败');return}const d1=await r1.json();console.log('超时时间Сохранить结果:',d1);if(!d1.success){console.error('Сохранить超时时间失败:',d1);return showToast('Сохранить超时时间失败','error')}console.log('Сохранить域名...');const r2=await apiRequest('/api/cache/base-url',{method:'POST',body:JSON.stringify({base_url:baseUrl})});if(!r2){console.error('Сохранить域名请求失败');return}const d2=await r2.json();console.log('域名Сохранить结果:',d2);if(d2.success){showToast('Настройка кэшаСохранить成功','success');console.log('等待配置文件写入完成...');await new Promise(r=>setTimeout(r,200));console.log('重新加载配置...');await loadCacheConfig()}else{console.error('Сохранить域名失败:',d2);showToast('Сохранить域名失败','error')}}catch(e){console.error('Сохранить失败:',e);showToast('Сохранить失败: '+e.message,'error')}},
+        saveGenerationTimeout=async()=>{const imageTimeout=parseInt($('cfgImageTimeout').value)||300,videoTimeout=parseInt($('cfgVideoTimeout').value)||1500;console.log('СохранитьНастройка таймаутов генерации:',{imageTimeout,videoTimeout});if(imageTimeout<60||imageTimeout>3600)return showToast('Изображения超时时间必须在 60-3600 секунд之间','error');if(videoTimeout<60||videoTimeout>7200)return showToast('Видео超时时间必须在 60-7200 секунд之间','error');try{const r=await apiRequest('/api/generation/timeout',{method:'POST',body:JSON.stringify({image_timeout:imageTimeout,video_timeout:videoTimeout})});if(!r){console.error('Сохранить请求失败');return}const d=await r.json();console.log('Сохранить结果:',d);if(d.success){showToast('Настройка таймаутов генерацииСохранить成功','success');await new Promise(r=>setTimeout(r,200));await loadGenerationTimeout()}else{console.error('Сохранить失败:',d);showToast('Сохранить失败','error')}}catch(e){console.error('Сохранить失败:',e);showToast('Сохранить失败: '+e.message,'error')}},
+        toggleATAutoRefresh=async()=>{try{const enabled=$('atAutoRefreshToggle').checked;const r=await apiRequest('/api/token-refresh/enabled',{method:'POST',body:JSON.stringify({enabled:enabled})});if(!r){$('atAutoRefreshToggle').checked=!enabled;return}const d=await r.json();if(d.success){showToast(enabled?'AT自动刷新已Включить':'AT自动刷新已Отключить','success')}else{showToast('Действия失败: '+(d.detail||'未知Ошибки'),'error');$('atAutoRefreshToggle').checked=!enabled}}catch(e){showToast('Действия失败: '+e.message,'error');$('atAutoRefreshToggle').checked=!enabled}},
+        loadATAutoRefreshConfig=async()=>{try{const r=await apiRequest('/api/token-refresh/config');if(!r)return;const d=await r.json();if(d.success&&d.config){$('atAutoRefreshToggle').checked=d.config.at_auto_refresh_enabled||false}else{console.error('AT自动刷新配置数据格式Ошибки:',d)}}catch(e){console.error('加载AT自动刷新配置失败:',e)}},
         loadLogs=async()=>{try{const r=await apiRequest('/api/logs?limit=100');if(!r)return;const logs=await r.json();const tb=$('logsTableBody');tb.innerHTML=logs.map(l=>`<tr><td class="py-2.5 px-3">${l.operation}</td><td class="py-2.5 px-3"><span class="text-xs ${l.token_email?'text-blue-600':'text-muted-foreground'}">${l.token_email||'未知'}</span></td><td class="py-2.5 px-3"><span class="inline-flex items-center rounded px-2 py-0.5 text-xs ${l.status_code===200?'bg-green-50 text-green-700':'bg-red-50 text-red-700'}">${l.status_code}</span></td><td class="py-2.5 px-3">${l.duration.toFixed(2)}</td><td class="py-2.5 px-3 text-xs text-muted-foreground">${l.created_at?new Date(l.created_at).toLocaleString('zh-CN'):'-'}</td></tr>`).join('')}catch(e){console.error('加载日志失败:',e)}},
         refreshLogs=async()=>{await loadLogs()},
         showToast=(m,t='info')=>{const d=document.createElement('div'),bc={success:'bg-green-600',error:'bg-destructive',info:'bg-primary'};d.className=`fixed bottom-4 right-4 ${bc[t]||bc.info} text-white px-4 py-2.5 rounded-lg shadow-lg text-sm font-medium z-50 animate-slide-up`;d.textContent=m;document.body.appendChild(d);setTimeout(()=>{d.style.opacity='0';d.style.transition='opacity .3s';setTimeout(()=>d.parentNode&&document.body.removeChild(d),300)},2000)},
-        logout=()=>{if(!confirm('确定要退出登录吗?'))return;localStorage.removeItem('adminToken');location.href='/login'},
+        logout=()=>{if(!confirm('ОК要退出登录吗?'))return;localStorage.removeItem('adminToken');location.href='/login'},
         switchTab=t=>{const cap=n=>n.charAt(0).toUpperCase()+n.slice(1);['tokens','settings','logs'].forEach(n=>{const active=n===t;$(`panel${cap(n)}`).classList.toggle('hidden',!active);$(`tab${cap(n)}`).classList.toggle('border-primary',active);$(`tab${cap(n)}`).classList.toggle('text-primary',active);$(`tab${cap(n)}`).classList.toggle('border-transparent',!active);$(`tab${cap(n)}`).classList.toggle('text-muted-foreground',!active)});if(t==='settings'){loadAdminConfig();loadProxyConfig();loadWatermarkFreeConfig();loadCacheConfig();loadGenerationTimeout();loadATAutoRefreshConfig()}else if(t==='logs'){loadLogs()}};
         window.addEventListener('DOMContentLoaded',()=>{checkAuth();refreshTokens();loadATAutoRefreshConfig()});
     </script>

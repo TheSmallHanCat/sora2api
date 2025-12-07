@@ -168,9 +168,9 @@ async def get_tokens(token: str = Depends(verify_admin_token)) -> List[dict]:
         stats = await db.get_token_stats(token.id)
         result.append({
             "id": token.id,
-            "token": token.token,  # 完整的Access Token
-            "st": token.st,  # 完整的Session Token
-            "rt": token.rt,  # 完整的Refresh Token
+            "token": token.token,  # Полный Access Token
+            "st": token.st,  # Полный Session Token
+            "rt": token.rt,  # Полный Refresh Token
             "client_id": token.client_id,  # Client ID
             "email": token.email,
             "name": token.name,
@@ -228,12 +228,12 @@ async def add_token(request: AddTokenRequest, token: str = Depends(verify_admin_
                 image_concurrency=request.image_concurrency,
                 video_concurrency=request.video_concurrency
             )
-        return {"success": True, "message": "Token 添加成功", "token_id": new_token.id}
+        return {"success": True, "message": "Token успешно добавлен", "token_id": new_token.id}
     except ValueError as e:
         # Token already exists
         raise HTTPException(status_code=409, detail=str(e))
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"添加 Token 失败: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Ошибка добавления Token: {str(e)}")
 
 @router.post("/api/tokens/st2at")
 async def st_to_at(request: ST2ATRequest, token: str = Depends(verify_admin_token)):
@@ -774,8 +774,8 @@ async def get_cache_config(token: str = Depends(verify_admin_token)):
         "config": {
             "enabled": config.cache_enabled,
             "timeout": config.cache_timeout,
-            "base_url": config.cache_base_url,  # 返回实际配置的值，可能为空字符串
-            "effective_base_url": config.cache_base_url or f"http://{config.server_host}:{config.server_port}"  # 实际生效的值
+            "base_url": config.cache_base_url,  # Возвращаем фактическое значение, может быть пустой строкой
+            "effective_base_url": config.cache_base_url or f"http://{config.server_host}:{config.server_port}"  # Фактически действующее значение
         }
     }
 

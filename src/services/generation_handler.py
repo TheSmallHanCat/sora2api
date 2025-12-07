@@ -1059,7 +1059,7 @@ class GenerationHandler:
 
             # Step 7: Return success message
             yield self._format_stream_chunk(
-                content=f"角色创建成功，角色名@{username}",
+                content=f"Персонаж успешно создан, имя @{username}",
                 finish_reason="STOP"
             )
             yield "data: [DONE]\n\n"
