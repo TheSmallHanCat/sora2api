@@ -44,10 +44,80 @@
     </div>
 
     <script>
-        const form=document.getElementById('loginForm'),btn=document.getElementById('loginButton');
-        form.addEventListener('submit',async(e)=>{e.preventDefault();btn.disabled=true;btn.textContent='Вход...';try{const fd=new FormData(form),r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:fd.get('username'),password:fd.get('password')})});const d=await r.json();d.success?(localStorage.setItem('adminToken',d.token),location.href='/manage'):showToast(d.message||'Ошибка входа','error')}catch(e){showToast('Ошибка сети, попробуйте позже','error')}finally{btn.disabled=false;btn.textContent='Войти'}});
-        function showToast(m,t='error'){const d=document.createElement('div'),bc={success:'bg-green-600',error:'bg-destructive',info:'bg-primary'};d.className=`fixed bottom-4 right-4 ${bc[t]||bc.error} text-white px-4 py-2.5 rounded-lg shadow-lg text-sm font-medium z-50 animate-slide-up`;d.textContent=m;document.body.appendChild(d);setTimeout(()=>{d.style.opacity='0';d.style.transition='opacity .3s';setTimeout(()=>d.parentNode&&document.body.removeChild(d),300)},2000)}
-        window.addEventListener('DOMContentLoaded',()=>{const t=localStorage.getItem('adminToken');t&&fetch('/api/stats',{headers:{Authorization:`Bearer ${t}`}}).then(r=>{if(r.ok)location.href='/manage'})});
+        const form = document.getElementById("loginForm");
+        const btn = document.getElementById("loginButton");
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            btn.disabled = true;
+            btn.textContent = "Вход...";
+            try {
+                const fd = new FormData(form);
+                const r = await fetch("/api/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        username: fd.get("username"),
+                        password: fd.get("password")
+                    })
+                });
+                const d = await r.json();
+                d.success ?
+                    (localStorage.setItem("adminToken", d.token),
+                        (location.href = "/manage")) :
+                    showToast(d.message || "Ошибка входа", "error");
+            } catch (e) {
+                showToast("Ошибка сети, попробуйте позже", "error");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Войти";
+            }
+        });
+
+        function showToast(m, t = "error") {
+            const d = document.createElement("div");
+            const bc = {
+                success: "bg-green-600",
+                error: "bg-destructive",
+                info: "bg-primary"
+            };
+            d.className = `fixed bottom-4 right-4 ${
+                    bc[t] || bc.error
+                } text-white px-4 py-2.5 rounded-lg shadow-lg text-sm font-medium z-50 animate-slide-up`;
+            d.textContent = m;
+            document.body.appendChild(d);
+            setTimeout(() => {
+                d.style.opacity = "0";
+                d.style.transition = "opacity .3s";
+                setTimeout(() => d.parentNode && document.body.removeChild(d), 300);
+            }, 2000);
+        }
+        window.addEventListener("DOMContentLoaded", () => {
+            const t = localStorage.getItem("adminToken");
+            t &&
+                fetch("/api/stats", {
+                    headers: {
+                        Authorization: `Bearer ${t}`
+                    }
+                }).then(({
+                    ok
+                }) => {
+                    if (ok) location.href = "/manage";
+                });
+        });
+        window.addEventListener('DOMContentLoaded', () => {
+            const t = localStorage.getItem('adminToken');
+            t && fetch('/api/stats', {
+                headers: {
+                    Authorization: `Bearer ${t}`
+                }
+            }).then(({
+                ok
+            }) => {
+                if (ok) location.href = '/manage'
+            })
+        });
     </script>
 </body>
 </html>
