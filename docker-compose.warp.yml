@@ -5,7 +5,7 @@ services:
     image: thesmallhancat/sora2api:latest
     container_name: sora2api
     ports:
-      - "8000:8000"
+      - "30003:30003"
     volumes:
       - ./data:/app/data
       - ./config/setting_warp.toml:/app/config/setting.toml

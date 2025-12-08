@@ -109,7 +109,7 @@ python main.py
 
 После запуска сервиса откройте панель управления для начальной настройки:
 
-- **Адрес**: http://localhost:8000
+- **Адрес**: http://localhost:30003
 - **Имя пользователя**: `admin`
 - **Пароль**: `admin`
 
@@ -136,7 +136,7 @@ python main.py
 
 #### Основная информация (стандартный формат OpenAI, требуется потоковый режим)
 
-- **Эндпоинт**: `http://localhost:8000/v1/chat/completions`
+- **Эндпоинт**: `http://localhost:30003/v1/chat/completions`
 - **Аутентификация**: Добавьте в заголовок `Authorization: Bearer YOUR_API_KEY`
 - **API Key по умолчанию**: `han1234` (рекомендуется изменить)
 
@@ -166,7 +166,7 @@ python main.py
 **Текст в изображение**
 
 ```bash
-curl -X POST "http://localhost:8000/v1/chat/completions" \
+curl -X POST "http://localhost:30003/v1/chat/completions" \
   -H "Authorization: Bearer han1234" \
   -H "Content-Type: application/json" \
   -d '{
@@ -183,7 +183,7 @@ curl -X POST "http://localhost:8000/v1/chat/completions" \
 **Изображение в изображение**
 
 ```bash
-curl -X POST "http://localhost:8000/v1/chat/completions" \
+curl -X POST "http://localhost:30003/v1/chat/completions" \
   -H "Authorization: Bearer han1234" \
   -H "Content-Type: application/json" \
   -d '{
@@ -212,7 +212,7 @@ curl -X POST "http://localhost:8000/v1/chat/completions" \
 **Текст в видео**
 
 ```bash
-curl -X POST "http://localhost:8000/v1/chat/completions" \
+curl -X POST "http://localhost:30003/v1/chat/completions" \
   -H "Authorization: Bearer han1234" \
   -H "Content-Type: application/json" \
   -d '{
@@ -230,7 +230,7 @@ curl -X POST "http://localhost:8000/v1/chat/completions" \
 **Изображение в видео**
 
 ```bash
-curl -X POST "http://localhost:8000/v1/chat/completions" \
+curl -X POST "http://localhost:30003/v1/chat/completions" \
   -H "Authorization: Bearer han1234" \
   -H "Content-Type: application/json" \
   -d '{
@@ -261,7 +261,7 @@ curl -X POST "http://localhost:8000/v1/chat/completions" \
 * Достаточно включить ссылку или ID remix в промпт
 
 ```bash
-curl -X POST "http://localhost:8000/v1/chat/completions" \
+curl -X POST "http://localhost:30003/v1/chat/completions" \
   -H "Authorization: Bearer han1234" \
   -H "Content-Type: application/json" \
   -d '{
@@ -287,7 +287,7 @@ curl -X POST "http://localhost:8000/v1/chat/completions" \
   ```
 
 ```bash
-curl -X POST "http://localhost:8000/v1/chat/completions" \
+curl -X POST "http://localhost:30003/v1/chat/completions" \
   -H "Authorization: Bearer han1234" \
   -H "Content-Type: application/json" \
   -d '{
@@ -317,7 +317,7 @@ Sora2API поддерживает функцию **генерации видео
 Загрузка видео для извлечения информации о персонаже, получение имени и аватара персонажа.
 
 ```bash
-curl -X POST "http://localhost:8000/v1/chat/completions" \
+curl -X POST "http://localhost:30003/v1/chat/completions" \
   -H "Authorization: Bearer han1234" \
   -H "Content-Type: application/json" \
   -d '{
@@ -344,7 +344,7 @@ curl -X POST "http://localhost:8000/v1/chat/completions" \
 Загрузка видео для создания персонажа, затем генерация нового видео с этим персонажем.
 
 ```bash
-curl -X POST "http://localhost:8000/v1/chat/completions" \
+curl -X POST "http://localhost:30003/v1/chat/completions" \
   -H "Authorization: Bearer han1234" \
   -H "Content-Type: application/json" \
   -d '{
@@ -382,7 +382,7 @@ with open("video.mp4", "rb") as f:
 
 # Только создание персонажа
 response = requests.post(
-    "http://localhost:8000/v1/chat/completions",
+    "http://localhost:30003/v1/chat/completions",
     headers={
         "Authorization": "Bearer han1234",
         "Content-Type": "application/json"
