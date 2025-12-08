@@ -50,3 +50,4 @@ logs.txt
 # Environment
 .env
 .env.local
+tmp/

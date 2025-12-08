@@ -1,8 +1,8 @@
 """API routes - OpenAI compatible endpoints"""
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import StreamingResponse, JSONResponse
 from datetime import datetime
-from typing import List
+from typing import List, Any
 import json
 import re
 from pydantic import BaseModel
@@ -313,3 +313,42 @@ async def create_chat_completion(
                 }
             }
         )
+
+@router.api_route("/api/accounts/{email}/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
+async def proxy_sora_api(
+    email: str,
+    path: str,
+    request: Request,
+    api_key: str = Depends(verify_api_key_header)
+):
+    """Proxy request to Sora API for specific account"""
+    # Get token for email
+    tokens = await token_manager.get_all_tokens()
+    target_token = next((t for t in tokens if t.email == email), None)
+    
+    if not target_token:
+        raise HTTPException(status_code=404, detail="Account not found")
+    
+    # Get request body
+    body = None
+    if request.method in ["POST", "PUT"]:
+        try:
+            body = await request.json()
+        except:
+            body = None
+            
+    # Reconstruct path with query params
+    if request.query_params:
+        path = f"{path}?{str(request.query_params)}"
+            
+    # Call proxy
+    try:
+        result = await generation_handler.sora_client.proxy_request(
+            method=request.method,
+            endpoint=path,
+            token=target_token.token,
+            json_data=body
+        )
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

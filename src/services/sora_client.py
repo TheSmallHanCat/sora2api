@@ -187,6 +187,19 @@ class SoraClient:
                 raise Exception(error_msg)
 
             return response_json if response_json else response.json()
+
+    async def proxy_request(self, method: str, endpoint: str, token: str,
+                           json_data: Optional[Dict] = None,
+                           multipart: Optional[Dict] = None) -> Any:
+        """Proxy request to Sora API"""
+        # Add sentinel token for POST requests
+        add_sentinel = method.upper() == "POST"
+        
+        # Ensure endpoint starts with /
+        if not endpoint.startswith("/"):
+            endpoint = "/" + endpoint
+            
+        return await self._make_request(method, endpoint, token, json_data, multipart, add_sentinel_token=add_sentinel)
     
     async def get_user_info(self, token: str) -> Dict[str, Any]:
         """Get user information"""
@@ -291,7 +304,7 @@ class SoraClient:
         Returns:
             List of pending tasks with progress information
         """
-        result = await self._make_request("GET", "/nf/pending", token)
+        result = await self._make_request("GET", "/nf/pending/v2", token)
         # The API returns a list directly
         return result if isinstance(result, list) else []
 
