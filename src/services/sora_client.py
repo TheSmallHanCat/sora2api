@@ -402,13 +402,13 @@ class SoraClient:
 
             return True
 
-    async def get_watermark_free_url_custom(self, parse_url: str, parse_token: str, post_id: str) -> str:
+    async def get_watermark_free_url_custom(self, parse_url: str, post_id: str, parse_token: Optional[str] = None) -> str:
         """Get watermark-free video URL from custom parse server
 
         Args:
             parse_url: Custom parse server URL (e.g., http://example.com)
-            parse_token: Access token for custom parse server
             post_id: Post ID to parse (e.g., s_690c0f574c3881918c3bc5b682a7e9fd)
+            parse_token: Access token for custom parse server (optional)
 
         Returns:
             Download link from custom parse server
@@ -424,7 +424,7 @@ class SoraClient:
         # Prepare request
         json_data = {
             "url": share_url,
-            "token": parse_token
+            "token": parse_token if parse_token else ""
         }
 
         kwargs = {

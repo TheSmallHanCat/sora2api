@@ -1,0 +1,3 @@
+[submodule "sora-downloader"]
+	path = sora-downloader
+	url = https://github.com/kpeeem/sora-downloader.git

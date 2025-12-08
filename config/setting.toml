@@ -39,7 +39,7 @@ proxy_url = ""
 [watermark_free]
 watermark_free_enabled = false
 parse_method = "third_party"
-custom_parse_url = ""
+custom_parse_url = "http://127.0.0.1:40004"
 custom_parse_token = ""
 
 [token_refresh]

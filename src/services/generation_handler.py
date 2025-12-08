@@ -454,6 +454,7 @@ class GenerationHandler:
         poll_interval = config.poll_interval
         max_attempts = int(timeout / poll_interval)  # Calculate max attempts based on timeout
         last_progress = 0
+        last_status = None
         start_time = time.time()
         last_heartbeat_time = start_time  # Track last heartbeat for image generation
         heartbeat_interval = 10  # Send heartbeat every 10 seconds for image generation
@@ -514,14 +515,15 @@ class GenerationHandler:
                             else:
                                 progress_pct = int(progress_pct * 100)
 
-                            # Update last_progress for tracking
-                            last_progress = progress_pct
                             status = task.get("status", "processing")
 
-                            # Output status every 30 seconds (not just when progress changes)
+                            # Output status if progress changed, status changed, or every 30 seconds
                             current_time = time.time()
-                            if stream and (current_time - last_status_output_time >= video_status_interval):
+                            if stream and (progress_pct != last_progress or status != last_status or current_time - last_status_output_time >= video_status_interval):
                                 last_status_output_time = current_time
+                                last_progress = progress_pct
+                                last_status = status
+                                
                                 debug_logger.log_info(f"Task {task_id} progress: {progress_pct}% (status: {status})")
                                 yield self._format_stream_chunk(
                                     reasoning_content=f"**Video Generation Progress**: {progress_pct}% ({status})\n"
@@ -574,8 +576,8 @@ class GenerationHandler:
                                         # Get watermark-free video URL based on parse method
                                         if parse_method == "custom":
                                             # Use custom parse server
-                                            if not watermark_config.custom_parse_url or not watermark_config.custom_parse_token:
-                                                raise Exception("Custom parse server URL or token not configured")
+                                            if not watermark_config.custom_parse_url:
+                                                raise Exception("Custom parse server URL not configured")
 
                                             if stream:
                                                 yield self._format_stream_chunk(
