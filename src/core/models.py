@@ -138,6 +138,7 @@ class ChatCompletionRequest(BaseModel):
     image: Optional[str] = None
     video: Optional[str] = None  # Base64 encoded video file
     remix_target_id: Optional[str] = None  # Sora share link video ID for remix
+    email: Optional[str] = None  # Specific token email to use for generation
     stream: bool = False
     max_tokens: Optional[int] = None
 

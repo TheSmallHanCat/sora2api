@@ -44,7 +44,7 @@ sora_client = SoraClient(proxy_manager)
 generation_handler = GenerationHandler(sora_client, token_manager, load_balancer, db, proxy_manager, concurrency_manager)
 
 # Set dependencies for route modules
-api_routes.set_generation_handler(generation_handler)
+api_routes.set_dependencies(generation_handler, token_manager, db)
 admin_routes.set_dependencies(token_manager, proxy_manager, db, generation_handler, concurrency_manager)
 
 # Include routers

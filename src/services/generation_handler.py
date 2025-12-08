@@ -210,6 +210,7 @@ class GenerationHandler:
                                image: Optional[str] = None,
                                video: Optional[str] = None,
                                remix_target_id: Optional[str] = None,
+                               email: Optional[str] = None,
                                stream: bool = True) -> AsyncGenerator[str, None]:
         """Handle generation request
 
@@ -218,7 +219,9 @@ class GenerationHandler:
             prompt: Generation prompt
             image: Base64 encoded image
             video: Base64 encoded video or video URL
+            email: Specific token email to use for generation
             remix_target_id: Sora share link video ID for remix
+            email: Specific token email to use for generation
             stream: Whether to stream response
         """
         start_time = time.time()
@@ -252,7 +255,7 @@ class GenerationHandler:
         if is_video:
             # Remix flow: remix_target_id provided
             if remix_target_id:
-                async for chunk in self._handle_remix(remix_target_id, prompt, model_config):
+                async for chunk in self._handle_remix(remix_target_id, prompt, model_config, email):
                     yield chunk
                 return
 
@@ -263,18 +266,18 @@ class GenerationHandler:
 
                 # If no prompt, just create character and return
                 if not prompt:
-                    async for chunk in self._handle_character_creation_only(video_data, model_config):
+                    async for chunk in self._handle_character_creation_only(video_data, model_config, email):
                         yield chunk
                     return
                 else:
                     # If prompt provided, create character and generate video
-                    async for chunk in self._handle_character_and_video_generation(video_data, prompt, model_config):
+                    async for chunk in self._handle_character_and_video_generation(video_data, prompt, model_config, email):
                         yield chunk
                     return
 
         # Streaming mode: proceed with actual generation
         # Select token (with lock for image generation, Sora2 quota check for video generation)
-        token_obj = await self.load_balancer.select_token(for_image_generation=is_image, for_video_generation=is_video)
+        token_obj = await self.load_balancer.select_token(for_image_generation=is_image, for_video_generation=is_video, email=email)
         if not token_obj:
             if is_image:
                 raise Exception("No available tokens for image generation. All tokens are either disabled, cooling down, locked, or expired.")
@@ -956,7 +959,7 @@ class GenerationHandler:
 
     # ==================== Character Creation and Remix Handlers ====================
 
-    async def _handle_character_creation_only(self, video_data, model_config: Dict) -> AsyncGenerator[str, None]:
+    async def _handle_character_creation_only(self, video_data, model_config: Dict, email: Optional[str] = None) -> AsyncGenerator[str, None]:
         """Handle character creation only (no video generation)
 
         Flow:
@@ -969,7 +972,7 @@ class GenerationHandler:
         7. Set character as public
         8. Return success message
         """
-        token_obj = await self.load_balancer.select_token(for_video_generation=True)
+        token_obj = await self.load_balancer.select_token(for_video_generation=True, email=email)
         if not token_obj:
             raise Exception("No available tokens for character creation")
 
@@ -1072,7 +1075,7 @@ class GenerationHandler:
             )
             raise
 
-    async def _handle_character_and_video_generation(self, video_data, prompt: str, model_config: Dict) -> AsyncGenerator[str, None]:
+    async def _handle_character_and_video_generation(self, video_data, prompt: str, model_config: Dict, email: Optional[str] = None) -> AsyncGenerator[str, None]:
         """Handle character creation and video generation
 
         Flow:
@@ -1086,7 +1089,7 @@ class GenerationHandler:
         8. Delete character
         9. Return video result
         """
-        token_obj = await self.load_balancer.select_token(for_video_generation=True)
+        token_obj = await self.load_balancer.select_token(for_video_generation=True, email=email)
         if not token_obj:
             raise Exception("No available tokens for video generation")
 
@@ -1234,7 +1237,7 @@ class GenerationHandler:
                         response_text=str(e)
                     )
 
-    async def _handle_remix(self, remix_target_id: str, prompt: str, model_config: Dict) -> AsyncGenerator[str, None]:
+    async def _handle_remix(self, remix_target_id: str, prompt: str, model_config: Dict, email: Optional[str] = None) -> AsyncGenerator[str, None]:
         """Handle remix video generation
 
         Flow:
@@ -1244,7 +1247,7 @@ class GenerationHandler:
         4. Poll for results
         5. Return video result
         """
-        token_obj = await self.load_balancer.select_token(for_video_generation=True)
+        token_obj = await self.load_balancer.select_token(for_video_generation=True, email=email)
         if not token_obj:
             raise Exception("No available tokens for remix generation")
 

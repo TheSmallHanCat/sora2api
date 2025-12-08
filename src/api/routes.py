@@ -5,19 +5,26 @@ from datetime import datetime
 from typing import List
 import json
 import re
+from pydantic import BaseModel
 from ..core.auth import verify_api_key_header
 from ..core.models import ChatCompletionRequest
 from ..services.generation_handler import GenerationHandler, MODEL_CONFIG
+from ..services.token_manager import TokenManager
+from ..core.database import Database
 
 router = APIRouter()
 
 # Dependency injection will be set up in main.py
 generation_handler: GenerationHandler = None
+token_manager: TokenManager = None
+db: Database = None
 
-def set_generation_handler(handler: GenerationHandler):
-    """Set generation handler instance"""
-    global generation_handler
+def set_dependencies(handler: GenerationHandler, tm: TokenManager, database: Database):
+    """Set dependencies"""
+    global generation_handler, token_manager, db
     generation_handler = handler
+    token_manager = tm
+    db = database
 
 def _extract_remix_id(text: str) -> str:
     """Extract remix ID from text
@@ -41,6 +48,63 @@ def _extract_remix_id(text: str) -> str:
         return match.group(0)
 
     return ""
+
+class AccountRequest(BaseModel):
+    email: str
+
+@router.get("/v1/accounts")
+async def list_accounts(api_key: str = Depends(verify_api_key_header)):
+    """List all accounts with tokens"""
+    tokens = await token_manager.get_all_tokens()
+    result = []
+    
+    for token in tokens:
+        stats = await db.get_token_stats(token.id)
+        result.append({
+            "email": token.email,
+            "is_active": token.is_active,
+            "plan_type": token.plan_type,
+            "plan_title": token.plan_title,
+            "subscription_end": token.subscription_end.isoformat() if token.subscription_end else None,
+            "sora2_remaining_count": token.sora2_remaining_count,
+            "sora2_total_count": token.sora2_total_count,
+            "image_count": stats.image_count if stats else 0,
+            "video_count": stats.video_count if stats else 0,
+        })
+    
+    return {
+        "object": "list",
+        "data": result
+    }
+
+@router.post("/v1/accounts")
+async def get_account(
+    request: AccountRequest,
+    api_key: str = Depends(verify_api_key_header)
+):
+    """Get account info by email"""
+    tokens = await token_manager.get_all_tokens()
+    target_token = next((t for t in tokens if t.email == request.email), None)
+    
+    if not target_token:
+        raise HTTPException(status_code=404, detail="Account not found")
+        
+    stats = await db.get_token_stats(target_token.id)
+    
+    return {
+        "object": "account",
+        "data": {
+            "email": target_token.email,
+            "is_active": target_token.is_active,
+            "plan_type": target_token.plan_type,
+            "plan_title": target_token.plan_title,
+            "subscription_end": target_token.subscription_end.isoformat() if target_token.subscription_end else None,
+            "sora2_remaining_count": target_token.sora2_remaining_count,
+            "sora2_total_count": target_token.sora2_total_count,
+            "image_count": stats.image_count if stats else 0,
+            "video_count": stats.video_count if stats else 0,
+        }
+    }
 
 @router.get("/v1/models")
 async def list_models(api_key: str = Depends(verify_api_key_header)):
@@ -146,6 +210,7 @@ async def create_chat_completion(
                     image=image_data,
                     video=video_data,
                     remix_target_id=remix_target_id,
+                    email=request.email,
                     stream=False
                 ):
                     result = chunk
@@ -177,6 +242,7 @@ async def create_chat_completion(
                         image=image_data,
                         video=video_data,
                         remix_target_id=remix_target_id,
+                        email=request.email,
                         stream=True
                     ):
                         yield chunk
@@ -212,6 +278,7 @@ async def create_chat_completion(
                 image=image_data,
                 video=video_data,
                 remix_target_id=remix_target_id,
+                email=request.email,
                 stream=False
             ):
                 result = chunk
