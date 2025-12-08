@@ -43,4 +43,4 @@ custom_parse_url = ""
 custom_parse_token = ""
 
 [token_refresh]
-at_auto_refresh_enabled = false
+at_auto_refresh_enabled = true

@@ -110,7 +110,7 @@ class TokenManager:
         async with AsyncSession() as session:
             url = "https://sora.chatgpt.com/backend/billing/subscriptions"
             print(f"📡 Запрос URL: {url}")
-            print(f"🔑 Используем Token: {token[:30]}...")0]}...")
+            print(f"🔑 Используем Token: {token[:30]}...")
 
             kwargs = {
                 "headers": headers,
@@ -142,7 +142,7 @@ class TokenManager:
                     print(f"✅ Информация о подписке успешно извлечена: {result}")
                     return result
 
-                print(f"⚠️  В данных ответа нет информации о подписке")та нет информации о подписке")
+                print(f"⚠️  В данных ответа нет информации о подписке")
                 return {
                     "plan_type": "",
                     "plan_title": "",
@@ -217,7 +217,7 @@ class TokenManager:
 
                     # Check if it's 401 unauthorized (token doesn't support Sora2)
                     if response.status_code == 401 and "Unauthorized" in error_info.get("message", ""):
-                        print(f"⚠️  Token не поддерживает Sora2, попытка активации...")ora2, попытка активации...")
+                        print(f"⚠️  Token не поддерживает Sora2, попытка активации...")
 
                         # Try to activate Sora2
                         try:
