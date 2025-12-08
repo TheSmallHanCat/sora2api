@@ -1,0 +1,125 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+  gap: 0.5rem;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Variants */
+.primary {
+  background-color: hsl(0 0% 9%);
+  color: hsl(0 0% 98%);
+}
+
+.primary:hover:not(:disabled) {
+  background-color: hsl(0 0% 9% / 0.9);
+}
+
+.secondary {
+  background-color: transparent;
+  color: inherit;
+  border: 1px solid hsl(0 0% 89%);
+}
+
+.secondary:hover:not(:disabled) {
+  background-color: hsl(0 0% 96.1%);
+}
+
+.danger {
+  background-color: hsl(0 84.2% 60.2%);
+  color: hsl(0 0% 98%);
+}
+
+.danger:hover:not(:disabled) {
+  background-color: hsl(0 84.2% 50%);
+}
+
+.success {
+  background-color: #16a34a;
+  color: white;
+}
+
+.success:hover:not(:disabled) {
+  background-color: #15803d;
+}
+
+.blue {
+  background-color: #2563eb;
+  color: white;
+}
+
+.blue:hover:not(:disabled) {
+  background-color: #1d4ed8;
+}
+
+.green {
+  background-color: #16a34a;
+  color: white;
+}
+
+.green:hover:not(:disabled) {
+  background-color: #15803d;
+}
+
+.ghost {
+  background-color: transparent;
+  color: inherit;
+}
+
+.ghost:hover:not(:disabled) {
+  background-color: hsl(0 0% 96.1%);
+}
+
+/* Sizes */
+.sm {
+  height: 1.75rem;
+  padding: 0 0.5rem;
+  font-size: 0.75rem;
+}
+
+.md {
+  height: 2.25rem;
+  padding: 0 1rem;
+  font-size: 0.875rem;
+}
+
+.lg {
+  height: 2.5rem;
+  padding: 0 1.25rem;
+  font-size: 0.875rem;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+/* Spinner */
+.spinner {
+  width: 1rem;
+  height: 1rem;
+  animation: spin 1s linear infinite;
+}
+
+.spinnerTrack {
+  opacity: 0.25;
+}
+
+.spinnerHead {
+  opacity: 0.75;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

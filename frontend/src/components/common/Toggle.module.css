@@ -1,0 +1,89 @@
+.wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.wrapper.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.toggle {
+  position: relative;
+  width: 2.75rem;
+  height: 1.5rem;
+  background-color: #e5e7eb;
+  border-radius: 9999px;
+  transition: background-color 0.2s;
+}
+
+.toggle.checked {
+  background-color: hsl(0 0% 9%);
+}
+
+.thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 1.25rem;
+  height: 1.25rem;
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 9999px;
+  transition: transform 0.2s;
+}
+
+.toggle.checked .thumb {
+  transform: translateX(1.25rem);
+  border-color: white;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Checkbox styles */
+.checkboxWrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.checkboxWrapper.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.checkbox {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.25rem;
+  border: 1px solid hsl(0 0% 89%);
+  cursor: pointer;
+}
+
+.checkbox:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px hsl(0 0% 3.9%);
+}
+
+.checkboxLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+}

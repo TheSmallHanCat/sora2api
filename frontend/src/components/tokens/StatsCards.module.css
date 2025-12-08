@@ -1,0 +1,48 @@
+.grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.card {
+  border-radius: 0.5rem;
+  border: 1px solid hsl(0 0% 89%);
+  background-color: hsl(0 0% 100%);
+  padding: 1rem;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: hsl(0 0% 45.1%);
+  margin: 0 0 0.5rem 0;
+}
+
+.value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.green {
+  color: #16a34a;
+}
+
+.blue {
+  color: #2563eb;
+}
+
+.purple {
+  color: #9333ea;
+}
+
+.red {
+  color: hsl(0 84.2% 60.2%);
+}

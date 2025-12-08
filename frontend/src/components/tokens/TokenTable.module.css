@@ -1,0 +1,146 @@
+.tableWrapper {
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  font-size: 0.875rem;
+  border-collapse: collapse;
+}
+
+.headerRow {
+  border-bottom: 1px solid hsl(0 0% 89%);
+}
+
+.th {
+  height: 2.5rem;
+  padding: 0 0.75rem;
+  text-align: left;
+  vertical-align: middle;
+  font-weight: 500;
+  color: hsl(0 0% 45.1%);
+  white-space: nowrap;
+}
+
+.thRight {
+  text-align: right;
+}
+
+.tbody tr {
+  border-bottom: 1px solid hsl(0 0% 89%);
+}
+
+.tbody tr:last-child {
+  border-bottom: none;
+}
+
+.td {
+  padding: 0.625rem 0.75rem;
+  vertical-align: middle;
+}
+
+.tdRight {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.smallText {
+  font-size: 0.75rem;
+}
+
+.muted {
+  color: hsl(0 0% 45.1%);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.badgeGreen {
+  background-color: #f0fdf4;
+  color: #15803d;
+}
+
+.badgeGray {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.badgeBlue {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+}
+
+.sora2Container {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.sora2Count {
+  font-size: 0.75rem;
+  color: hsl(0 0% 45.1%);
+}
+
+.clientId {
+  font-size: 0.75rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  cursor: pointer;
+}
+
+.clientId:hover {
+  color: hsl(0 0% 9%);
+}
+
+.expired {
+  color: #dc2626;
+}
+
+.expiringSoon {
+  color: #ea580c;
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.375rem;
+  height: 1.75rem;
+  padding: 0 0.5rem;
+  font-size: 0.75rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-right: 0.25rem;
+  transition: all 0.2s;
+}
+
+.actionBtn:last-child {
+  margin-right: 0;
+}
+
+.actionBtn:hover {
+  background-color: hsl(0 0% 96.1%);
+}
+
+.actionBlue:hover {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+}
+
+.actionGreen:hover {
+  background-color: #f0fdf4;
+  color: #15803d;
+}
+
+.actionDanger:hover {
+  background-color: hsl(0 84.2% 60.2% / 0.1);
+  color: hsl(0 84.2% 60.2%);
+}

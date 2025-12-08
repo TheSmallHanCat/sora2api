@@ -1,0 +1,79 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.input,
+.textarea,
+.select {
+  display: flex;
+  width: 100%;
+  border-radius: 0.375rem;
+  border: 1px solid hsl(0 0% 89%);
+  background-color: hsl(0 0% 100%);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+
+.input {
+  height: 2.25rem;
+}
+
+.textarea {
+  min-height: 4rem;
+  resize: none;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.select {
+  height: 2.25rem;
+  cursor: pointer;
+}
+
+.input:focus,
+.textarea:focus,
+.select:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: hsl(0 0% 3.9%);
+  border-color: hsl(0 0% 3.9%);
+}
+
+.input:disabled,
+.textarea:disabled,
+.select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: hsl(0 0% 45.1%);
+}
+
+.error {
+  border-color: hsl(0 84.2% 60.2%);
+}
+
+.hint {
+  font-size: 0.75rem;
+  color: hsl(0 0% 45.1%);
+  margin: 0;
+}
+
+.errorText {
+  font-size: 0.75rem;
+  color: hsl(0 84.2% 60.2%);
+  margin: 0;
+}
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}

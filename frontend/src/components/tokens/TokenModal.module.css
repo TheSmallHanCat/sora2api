@@ -1,0 +1,104 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.required {
+  color: #ef4444;
+}
+
+.optional {
+  font-size: 0.75rem;
+  color: hsl(0 0% 45.1%);
+  font-weight: 400;
+}
+
+.hint {
+  font-size: 0.75rem;
+  color: hsl(0 0% 45.1%);
+  margin: 0;
+}
+
+.successHint {
+  font-size: 0.75rem;
+  color: #16a34a;
+  font-weight: 500;
+  margin: 0;
+}
+
+.inputRow {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.inputRow > *:first-child {
+  flex: 1;
+}
+
+.convertBtn {
+  height: auto;
+  white-space: nowrap;
+}
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.separator {
+  padding-top: 0.5rem;
+  border-top: 1px solid hsl(0 0% 89%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.toggleRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.concurrencyInput {
+  display: flex;
+  height: 2rem;
+  width: 5rem;
+  border-radius: 0.375rem;
+  border: 1px solid hsl(0 0% 89%);
+  background-color: hsl(0 0% 100%);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+.concurrencyInput:focus {
+  outline: none;
+  border-color: hsl(0 0% 3.9%);
+}
+
+.infoBox {
+  border-radius: 0.375rem;
+  padding: 0.75rem;
+  border: 1px solid #bfdbfe;
+  background-color: #eff6ff;
+}
+
+.infoText {
+  font-size: 0.75rem;
+  color: #1e40af;
+  margin: 0;
+}
+
+.infoText strong {
+  font-weight: 600;
+}

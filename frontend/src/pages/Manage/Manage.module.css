@@ -1,0 +1,138 @@
+.container {
+  min-height: 100vh;
+  background-color: hsl(0 0% 100%);
+  color: hsl(0 0% 3.9%);
+}
+
+.main {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.loadingContainer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loadingSpinner {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid hsl(0 0% 89%);
+  border-top-color: hsl(0 0% 9%);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Tab Navigation */
+.tabNav {
+  border-bottom: 1px solid hsl(0 0% 89%);
+  margin-bottom: 1.5rem;
+}
+
+.tabs {
+  display: flex;
+  gap: 2rem;
+}
+
+.tabBtn {
+  padding: 0.75rem 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: hsl(0 0% 45.1%);
+}
+
+.tabBtn:hover {
+  color: hsl(0 0% 3.9%);
+}
+
+.tabActive {
+  border-bottom-color: hsl(0 0% 9%);
+  color: hsl(0 0% 3.9%);
+}
+
+/* Token Card */
+.tokenCard {
+  border-radius: 0.5rem;
+  border: 1px solid hsl(0 0% 89%);
+  background-color: hsl(0 0% 100%);
+}
+
+.tokenHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid hsl(0 0% 89%);
+  flex-wrap: wrap;
+}
+
+.tokenTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.tokenActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.autoRefreshToggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.autoRefreshLabel {
+  font-size: 0.75rem;
+  color: hsl(0 0% 45.1%);
+}
+
+.toggleWrapper {
+  position: relative;
+}
+
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.375rem;
+  transition: all 0.2s;
+  height: 2rem;
+  width: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.iconBtn:hover {
+  background-color: hsl(0 0% 96.1%);
+}
+
+.icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.btnIcon {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
+}

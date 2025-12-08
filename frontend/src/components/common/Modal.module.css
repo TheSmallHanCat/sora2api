@@ -1,0 +1,89 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.modal {
+  background-color: hsl(0 0% 100%);
+  border-radius: 0.5rem;
+  border: 1px solid hsl(0 0% 89%);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  width: 100%;
+  max-height: calc(100vh - 2rem);
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+}
+
+.sm {
+  max-width: 28rem;
+}
+
+.md {
+  max-width: 42rem;
+}
+
+.lg {
+  max-width: 56rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem;
+  border-bottom: 1px solid hsl(0 0% 89%);
+  position: sticky;
+  top: 0;
+  background-color: hsl(0 0% 100%);
+  z-index: 1;
+}
+
+.title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  color: hsl(0 0% 45.1%);
+  transition: color 0.2s;
+}
+
+.closeButton:hover {
+  color: hsl(0 0% 3.9%);
+}
+
+.closeIcon {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.content {
+  padding: 1.25rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  border-top: 1px solid hsl(0 0% 89%);
+  position: sticky;
+  bottom: 0;
+  background-color: hsl(0 0% 100%);
+}

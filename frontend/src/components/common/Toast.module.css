@@ -1,0 +1,45 @@
+.container {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.toast {
+  padding: 0.625rem 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: white;
+  animation: slideUp 0.3s ease-out;
+  max-width: 24rem;
+  word-wrap: break-word;
+  white-space: pre-line;
+}
+
+.success {
+  background-color: #16a34a;
+}
+
+.error {
+  background-color: hsl(0 84.2% 60.2%);
+}
+
+.info {
+  background-color: hsl(0 0% 9%);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
