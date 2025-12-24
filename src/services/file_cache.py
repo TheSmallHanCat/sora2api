@@ -62,6 +62,10 @@ class FileCache:
     async def _cleanup_expired_files(self):
         """Remove expired cache files"""
         try:
+            # Skip cleanup if timeout is -1 (never delete)
+            if self.default_timeout == -1:
+                return
+            
             current_time = time.time()
             removed_count = 0
             

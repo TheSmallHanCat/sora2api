@@ -723,11 +723,13 @@ async def update_cache_timeout(
 ):
     """Update cache timeout"""
     try:
-        if request.timeout < 60:
-            raise HTTPException(status_code=400, detail="Cache timeout must be at least 60 seconds")
+        # Allow -1 for never delete, otherwise must be between 60-86400
+        if request.timeout != -1:
+            if request.timeout < 60:
+                raise HTTPException(status_code=400, detail="Cache timeout must be at least 60 seconds or -1 for never delete")
 
-        if request.timeout > 86400:
-            raise HTTPException(status_code=400, detail="Cache timeout cannot exceed 24 hours (86400 seconds)")
+            if request.timeout > 86400:
+                raise HTTPException(status_code=400, detail="Cache timeout cannot exceed 24 hours (86400 seconds)")
 
         # Update in-memory config
         config.set_cache_timeout(request.timeout)
@@ -739,9 +741,10 @@ async def update_cache_timeout(
         if generation_handler:
             generation_handler.file_cache.set_timeout(request.timeout)
 
+        timeout_msg = "never delete" if request.timeout == -1 else f"{request.timeout} seconds"
         return {
             "success": True,
-            "message": f"Cache timeout updated to {request.timeout} seconds",
+            "message": f"Cache timeout updated to {timeout_msg}",
             "timeout": request.timeout
         }
     except HTTPException:

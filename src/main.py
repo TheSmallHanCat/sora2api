@@ -120,6 +120,9 @@ async def startup_event():
     config.set_cache_enabled(cache_config.cache_enabled)
     config.set_cache_timeout(cache_config.cache_timeout)
     config.set_cache_base_url(cache_config.cache_base_url or "")
+    
+    # Sync cache timeout to file cache instance
+    generation_handler.file_cache.set_timeout(cache_config.cache_timeout)
 
     # Load generation configuration from database
     generation_config = await db.get_generation_config()
