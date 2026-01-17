@@ -147,6 +147,7 @@ class UpdateWatermarkFreeConfigRequest(BaseModel):
     watermark_free_enabled: bool
     parse_method: Optional[str] = "third_party"  # "third_party" or "custom"
     custom_parse_url: Optional[str] = None
+    custom_parse_token: Optional[str] = None
 
 class BatchDisableRequest(BaseModel):
     token_ids: List[int]
