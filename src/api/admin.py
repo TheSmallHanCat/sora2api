@@ -119,6 +119,7 @@ class UpdateAdminConfigRequest(BaseModel):
     error_ban_threshold: int
     task_retry_enabled: Optional[bool] = None
     task_max_retries: Optional[int] = None
+    auto_disable_on_401: Optional[bool] = None
 
 class UpdateProxyConfigRequest(BaseModel):
     proxy_enabled: bool
@@ -682,6 +683,7 @@ async def get_admin_config(token: str = Depends(verify_admin_token)) -> dict:
         "error_ban_threshold": admin_config.error_ban_threshold,
         "task_retry_enabled": admin_config.task_retry_enabled,
         "task_max_retries": admin_config.task_max_retries,
+        "auto_disable_on_401": admin_config.auto_disable_on_401,
         "api_key": config.api_key,
         "admin_username": config.admin_username,
         "debug_enabled": config.debug_enabled
@@ -705,6 +707,8 @@ async def update_admin_config(
             current_config.task_retry_enabled = request.task_retry_enabled
         if request.task_max_retries is not None:
             current_config.task_max_retries = request.task_max_retries
+        if request.auto_disable_on_401 is not None:
+            current_config.auto_disable_on_401 = request.auto_disable_on_401
 
         await db.update_admin_config(current_config)
         return {"success": True, "message": "Configuration updated"}
@@ -941,8 +945,8 @@ async def get_logs(limit: int = 100, token: str = Depends(verify_admin_token)):
             "task_id": log.get("task_id")
         }
 
-        # If task_id exists and status is in-progress, get task progress
-        if log.get("task_id") and log.get("status_code") == -1:
+        # If task_id exists, get task progress and status
+        if log.get("task_id"):
             task = await db.get_task(log.get("task_id"))
             if task:
                 log_data["progress"] = task.progress

@@ -57,6 +57,7 @@ class Database:
             error_ban_threshold = 3
             task_retry_enabled = True
             task_max_retries = 3
+            auto_disable_on_401 = True
 
             if config_dict:
                 global_config = config_dict.get("global", {})
@@ -68,11 +69,12 @@ class Database:
                 error_ban_threshold = admin_config.get("error_ban_threshold", 3)
                 task_retry_enabled = admin_config.get("task_retry_enabled", True)
                 task_max_retries = admin_config.get("task_max_retries", 3)
+                auto_disable_on_401 = admin_config.get("auto_disable_on_401", True)
 
             await db.execute("""
-                INSERT INTO admin_config (id, admin_username, admin_password, api_key, error_ban_threshold, task_retry_enabled, task_max_retries)
-                VALUES (1, ?, ?, ?, ?, ?, ?)
-            """, (admin_username, admin_password, api_key, error_ban_threshold, task_retry_enabled, task_max_retries))
+                INSERT INTO admin_config (id, admin_username, admin_password, api_key, error_ban_threshold, task_retry_enabled, task_max_retries, auto_disable_on_401)
+                VALUES (1, ?, ?, ?, ?, ?, ?, ?)
+            """, (admin_username, admin_password, api_key, error_ban_threshold, task_retry_enabled, task_max_retries, auto_disable_on_401))
 
         # Ensure proxy_config has a row
         cursor = await db.execute("SELECT COUNT(*) FROM proxy_config")
@@ -477,6 +479,8 @@ class Database:
                 await db.execute("ALTER TABLE admin_config ADD COLUMN task_retry_enabled BOOLEAN DEFAULT 1")
             if not await self._column_exists(db, "admin_config", "task_max_retries"):
                 await db.execute("ALTER TABLE admin_config ADD COLUMN task_max_retries INTEGER DEFAULT 3")
+            if not await self._column_exists(db, "admin_config", "auto_disable_on_401"):
+                await db.execute("ALTER TABLE admin_config ADD COLUMN auto_disable_on_401 BOOLEAN DEFAULT 1")
 
             await db.commit()
 

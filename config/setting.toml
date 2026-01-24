@@ -34,6 +34,8 @@ error_ban_threshold = 3
 # 任务失败重试配置
 task_retry_enabled = true
 task_max_retries = 3
+# 401错误自动禁用token
+auto_disable_on_401 = true
 
 [proxy]
 proxy_enabled = false

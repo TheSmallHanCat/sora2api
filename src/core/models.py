@@ -92,6 +92,7 @@ class AdminConfig(BaseModel):
     error_ban_threshold: int = 3
     task_retry_enabled: bool = True  # 是否启用任务失败重试
     task_max_retries: int = 3  # 任务最大重试次数
+    auto_disable_on_401: bool = True  # 遇到401错误自动禁用token
     updated_at: Optional[datetime] = None
 
 class ProxyConfig(BaseModel):

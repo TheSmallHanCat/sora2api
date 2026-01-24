@@ -17,6 +17,13 @@ from ..core.models import Task, RequestLog
 from ..core.config import config
 from ..core.logger import debug_logger
 
+# Custom exception to carry token_id information
+class GenerationError(Exception):
+    """Custom exception for generation errors that includes token_id"""
+    def __init__(self, message: str, token_id: Optional[int] = None):
+        super().__init__(message)
+        self.token_id = token_id
+
 # Model configuration
 MODEL_CONFIG = {
     "gpt-image": {
@@ -726,7 +733,11 @@ class GenerationHandler:
                         status_code=500,
                         duration=duration
                     )
-            raise e
+            # Wrap exception with token_id information
+            if token_obj:
+                raise GenerationError(str(e), token_id=token_obj.id)
+            else:
+                raise e
 
     async def handle_generation_with_retry(self, model: str, prompt: str,
                                           image: Optional[str] = None,
@@ -747,9 +758,11 @@ class GenerationHandler:
         admin_config = await self.db.get_admin_config()
         retry_enabled = admin_config.task_retry_enabled
         max_retries = admin_config.task_max_retries if retry_enabled else 0
+        auto_disable_on_401 = admin_config.auto_disable_on_401
 
         retry_count = 0
         last_error = None
+        last_token_id = None  # Track the token that caused the error
 
         while retry_count <= max_retries:
             try:
@@ -761,6 +774,30 @@ class GenerationHandler:
 
             except Exception as e:
                 last_error = e
+                error_str = str(e)
+
+                # Extract token_id from GenerationError if available
+                if isinstance(e, GenerationError) and e.token_id:
+                    last_token_id = e.token_id
+
+                # Check if this is a 401 error
+                is_401_error = "401" in error_str or "unauthorized" in error_str.lower() or "token_invalidated" in error_str.lower()
+
+                # If 401 error and auto-disable is enabled, disable the token
+                if is_401_error and auto_disable_on_401 and last_token_id:
+                    debug_logger.log_info(f"Detected 401 error, auto-disabling token {last_token_id}")
+                    try:
+                        await self.db.update_token_status(last_token_id, False)
+                        if stream:
+                            yield self._format_stream_chunk(
+                                reasoning_content=f"**检测到401错误，已自动禁用Token {last_token_id}**\\n\\n正在使用其他Token重试...\\n\\n"
+                            )
+                    except Exception as disable_error:
+                        debug_logger.log_error(
+                            error_message=f"Failed to disable token {last_token_id}: {str(disable_error)}",
+                            status_code=500,
+                            response_text=str(disable_error)
+                        )
 
                 # Check if we should retry
                 should_retry = (
