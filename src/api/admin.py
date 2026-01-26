@@ -1391,7 +1391,26 @@ async def cancel_task(task_id: str, token: str = Depends(verify_admin_token)):
         for log in logs:
             if log.get("task_id") == task_id and log.get("status_code") == -1:
                 import time
-                duration = time.time() - (log.get("created_at").timestamp() if log.get("created_at") else time.time())
+                from datetime import datetime
+
+                # Calculate duration
+                created_at = log.get("created_at")
+                if created_at:
+                    # If created_at is a string, parse it
+                    if isinstance(created_at, str):
+                        try:
+                            created_at = datetime.fromisoformat(created_at.replace('Z', '+00:00'))
+                            duration = time.time() - created_at.timestamp()
+                        except:
+                            duration = 0
+                    # If it's already a datetime object
+                    elif isinstance(created_at, datetime):
+                        duration = time.time() - created_at.timestamp()
+                    else:
+                        duration = 0
+                else:
+                    duration = 0
+
                 await db.update_request_log(
                     log.get("id"),
                     response_body='{"error": "用户手动取消任务"}',

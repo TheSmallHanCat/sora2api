@@ -180,6 +180,30 @@ class Database:
                 VALUES (1, ?)
             """, (at_auto_refresh_enabled,))
 
+        # Ensure call_logic_config has a row
+        cursor = await db.execute("SELECT COUNT(*) FROM call_logic_config")
+        count = await cursor.fetchone()
+        if count[0] == 0:
+            # Get call logic config from config_dict if provided, otherwise use defaults
+            call_mode = "default"
+            polling_mode_enabled = False
+
+            if config_dict:
+                call_logic_config = config_dict.get("call_logic", {})
+                call_mode = call_logic_config.get("call_mode", "default")
+                # Normalize call_mode
+                if call_mode not in ("default", "polling"):
+                    # Check legacy polling_mode_enabled field
+                    polling_mode_enabled = call_logic_config.get("polling_mode_enabled", False)
+                    call_mode = "polling" if polling_mode_enabled else "default"
+                else:
+                    polling_mode_enabled = call_mode == "polling"
+
+            await db.execute("""
+                INSERT INTO call_logic_config (id, call_mode, polling_mode_enabled)
+                VALUES (1, ?, ?)
+            """, (call_mode, polling_mode_enabled))
+
 
     async def check_and_migrate_db(self, config_dict: dict = None):
         """Check database integrity and perform migrations if needed
@@ -386,6 +410,9 @@ class Database:
                     admin_password TEXT DEFAULT 'admin',
                     api_key TEXT DEFAULT 'han1234',
                     error_ban_threshold INTEGER DEFAULT 3,
+                    task_retry_enabled BOOLEAN DEFAULT 1,
+                    task_max_retries INTEGER DEFAULT 3,
+                    auto_disable_on_401 BOOLEAN DEFAULT 1,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """)
@@ -1199,10 +1226,10 @@ class Database:
         normalized = "polling" if call_mode == "polling" else "default"
         polling_mode_enabled = normalized == "polling"
         async with aiosqlite.connect(self.db_path) as db:
+            # Use INSERT OR REPLACE to ensure the row exists
             await db.execute("""
-                UPDATE call_logic_config
-                SET polling_mode_enabled = ?, call_mode = ?, updated_at = CURRENT_TIMESTAMP
-                WHERE id = 1
-            """, (polling_mode_enabled, normalized))
+                INSERT OR REPLACE INTO call_logic_config (id, call_mode, polling_mode_enabled, updated_at)
+                VALUES (1, ?, ?, CURRENT_TIMESTAMP)
+            """, (normalized, polling_mode_enabled))
             await db.commit()
 
