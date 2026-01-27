@@ -19,6 +19,7 @@ from .services.sora_client import SoraClient
 from .services.generation_handler import GenerationHandler
 from .services.concurrency_manager import ConcurrencyManager
 from .api import routes as api_routes
+from .api import sora_routes as sora_routes
 from .api import admin as admin_routes
 
 # Initialize scheduler (uses system local timezone by default)
@@ -51,10 +52,12 @@ generation_handler = GenerationHandler(sora_client, token_manager, load_balancer
 
 # Set dependencies for route modules
 api_routes.set_generation_handler(generation_handler)
+sora_routes.set_generation_handler(generation_handler)
 admin_routes.set_dependencies(token_manager, proxy_manager, db, generation_handler, concurrency_manager, scheduler)
 
 # Include routers
 app.include_router(api_routes.router)
+app.include_router(sora_routes.router)
 app.include_router(admin_routes.router)
 
 # Static files

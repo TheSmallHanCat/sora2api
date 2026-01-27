@@ -1,6 +1,6 @@
 """Data models"""
 from datetime import datetime
-from typing import Optional, List, Union
+from typing import Optional, List, Union, Dict, Any
 from pydantic import BaseModel
 
 class Token(BaseModel):
@@ -159,6 +159,14 @@ class ChatCompletionRequest(BaseModel):
     remix_target_id: Optional[str] = None  # Sora share link video ID for remix
     stream: bool = False
     max_tokens: Optional[int] = None
+
+class VideoCreateRequest(BaseModel):
+    prompt: str
+    model: Optional[str] = None
+    seconds: Optional[Union[int, str]] = None
+    size: Optional[str] = None
+    image: Optional[str] = None
+    metadata: Optional[Union[Dict[str, Any], str]] = None
 
 class ChatCompletionChoice(BaseModel):
     index: int

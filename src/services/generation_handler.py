@@ -856,9 +856,103 @@ class GenerationHandler:
         if last_error:
             raise last_error
 
+    async def start_video_task(self, model: str, prompt: str,
+                               image: Optional[str] = None,
+                               metadata: Optional[Dict[str, Any]] = None) -> str:
+        if model not in MODEL_CONFIG:
+            raise ValueError(f"Invalid model: {model}")
+        model_config = MODEL_CONFIG[model]
+        if model_config.get("type") != "video":
+            raise ValueError(f"Invalid model: {model}")
+        require_pro = model_config.get("require_pro", False)
+        token_obj = await self.load_balancer.select_token(
+            for_image_generation=False,
+            for_video_generation=True,
+            require_pro=require_pro
+        )
+        if not token_obj:
+            if require_pro:
+                raise Exception("No available Pro tokens. Pro models require a ChatGPT Pro subscription.")
+            raise Exception("No available tokens for video generation. All tokens are either disabled, cooling down, Sora2 quota exhausted, don't support Sora2, or expired.")
+        concurrency_acquired = False
+        if self.concurrency_manager:
+            concurrency_acquired = await self.concurrency_manager.acquire_video(token_obj.id)
+            if not concurrency_acquired:
+                raise Exception(f"Failed to acquire concurrency slot for token {token_obj.id}")
+        try:
+            media_id = None
+            if image:
+                if image.startswith("http://") or image.startswith("https://"):
+                    cached_filename = await self.file_cache.download_and_cache(image, "image", token_id=token_obj.id)
+                    cache_path = self.file_cache.get_cache_path(cached_filename)
+                    image_data = cache_path.read_bytes()
+                else:
+                    image_data = self._decode_base64_image(image)
+                media_id = await self.sora_client.upload_image(image_data, token_obj.token)
+            clean_prompt, style_id = self._extract_style(prompt)
+            if metadata:
+                if isinstance(metadata, str):
+                    try:
+                        metadata = json.loads(metadata)
+                    except Exception:
+                        metadata = None
+                if isinstance(metadata, dict) and not style_id:
+                    style_id = metadata.get("style_id") or style_id
+            n_frames = model_config.get("n_frames", 300)
+            sora_model = model_config.get("model", "sy_8")
+            video_size = model_config.get("size", "small")
+            task_id = await self.sora_client.generate_video(
+                clean_prompt, token_obj.token,
+                orientation=model_config["orientation"],
+                media_id=media_id,
+                n_frames=n_frames,
+                style_id=style_id,
+                model=sora_model,
+                size=video_size,
+                token_id=token_obj.id
+            )
+            task = Task(
+                task_id=task_id,
+                token_id=token_obj.id,
+                model=model,
+                prompt=clean_prompt,
+                status="processing",
+                progress=0.0
+            )
+            await self.db.create_task(task)
+            await self.token_manager.record_usage(token_obj.id, is_video=True)
+            # Keep upstream progress via polling; clients query /v1/videos/{id}.
+            asyncio.create_task(self._consume_video_task(task_id, token_obj, clean_prompt, concurrency_acquired))
+            return task_id
+        except Exception as e:
+            error_str = str(e).lower()
+            is_overload = "heavy_load" in error_str or "under heavy load" in error_str
+            await self.token_manager.record_error(token_obj.id, is_overload=is_overload)
+            if concurrency_acquired and self.concurrency_manager:
+                await self.concurrency_manager.release_video(token_obj.id)
+            raise
+
+    async def _consume_video_task(self, task_id: str, token_obj, prompt: str, concurrency_acquired: bool):
+        try:
+            async for _ in self._poll_task_result(task_id, token_obj.token, True, False, prompt, token_obj.id, manage_resources=False):
+                pass
+            task = await self.db.get_task(task_id)
+            if task and task.status == "completed":
+                await self.token_manager.record_success(token_obj.id, is_video=True)
+            else:
+                await self.token_manager.record_error(token_obj.id, is_overload=False)
+        except Exception as e:
+            error_str = str(e).lower()
+            is_overload = "heavy_load" in error_str or "under heavy load" in error_str
+            await self.token_manager.record_error(token_obj.id, is_overload=is_overload)
+        finally:
+            if concurrency_acquired and self.concurrency_manager:
+                await self.concurrency_manager.release_video(token_obj.id)
+
     async def _poll_task_result(self, task_id: str, token: str, is_video: bool,
                                 stream: bool, prompt: str, token_id: int = None,
-                                log_id: int = None, start_time: float = None) -> AsyncGenerator[str, None]:
+                                log_id: int = None, start_time: float = None,
+                                manage_resources: bool = True) -> AsyncGenerator[str, None]:
         """Poll for task result with timeout"""
         # Get timeout from config
         timeout = config.video_timeout if is_video else config.image_timeout
@@ -888,16 +982,15 @@ class GenerationHandler:
                     response_text=f"Task {task_id} timed out after {elapsed_time:.1f} seconds"
                 )
                 # Release lock if this is an image generation task
-                if not is_video and token_id:
+                if manage_resources and not is_video and token_id:
                     await self.load_balancer.token_lock.release_lock(token_id)
                     debug_logger.log_info(f"Released lock for token {token_id} due to timeout")
-                    # Release concurrency slot for image generation
                     if self.concurrency_manager:
                         await self.concurrency_manager.release_image(token_id)
                         debug_logger.log_info(f"Released concurrency slot for token {token_id} due to timeout")
 
                 # Release concurrency slot for video generation
-                if is_video and token_id and self.concurrency_manager:
+                if manage_resources and is_video and token_id and self.concurrency_manager:
                     await self.concurrency_manager.release_video(token_id)
                     debug_logger.log_info(f"Released concurrency slot for token {token_id} due to timeout")
 
@@ -990,7 +1083,7 @@ class GenerationHandler:
                                     await self.db.update_task(task_id, "failed", 0, error_message=error_message)
 
                                     # Release resources
-                                    if token_id and self.concurrency_manager:
+                                    if manage_resources and token_id and self.concurrency_manager:
                                         await self.concurrency_manager.release_video(token_id)
                                         debug_logger.log_info(f"Released concurrency slot for token {token_id} due to content violation")
 
@@ -1361,11 +1454,11 @@ class GenerationHandler:
                         )
 
                     # Release resources
-                    if not is_video and token_id:
+                    if manage_resources and not is_video and token_id:
                         await self.load_balancer.token_lock.release_lock(token_id)
                         if self.concurrency_manager:
                             await self.concurrency_manager.release_image(token_id)
-                    if is_video and token_id and self.concurrency_manager:
+                    if manage_resources and is_video and token_id and self.concurrency_manager:
                         await self.concurrency_manager.release_video(token_id)
 
                     # Send error message to client if streaming
@@ -1388,16 +1481,15 @@ class GenerationHandler:
                 continue
 
         # Timeout - release lock if image generation
-        if not is_video and token_id:
+        if manage_resources and not is_video and token_id:
             await self.load_balancer.token_lock.release_lock(token_id)
             debug_logger.log_info(f"Released lock for token {token_id} due to max attempts reached")
-            # Release concurrency slot for image generation
             if self.concurrency_manager:
                 await self.concurrency_manager.release_image(token_id)
                 debug_logger.log_info(f"Released concurrency slot for token {token_id} due to max attempts reached")
 
         # Release concurrency slot for video generation
-        if is_video and token_id and self.concurrency_manager:
+        if manage_resources and is_video and token_id and self.concurrency_manager:
             await self.concurrency_manager.release_video(token_id)
             debug_logger.log_info(f"Released concurrency slot for token {token_id} due to max attempts reached")
 
