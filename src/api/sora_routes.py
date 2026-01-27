@@ -79,13 +79,13 @@ async def create_video(
             "progress": 0
         }
         debug_logger.log_response(
-            status_code=201,
+            status_code=200,
             headers={"Content-Type": "application/json"},
             body=response_data,
             duration_ms=(time.time() - start_time) * 1000,
             source="Client"
         )
-        return JSONResponse(status_code=201, content=response_data)
+        return JSONResponse(status_code=200, content=response_data)
     except HTTPException:
         raise
     except Exception as e:
