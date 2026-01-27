@@ -122,7 +122,7 @@ async def get_video(
         )
     status_map = {
         "processing": "processing",
-        "completed": "succeeded",
+        "completed": "completed",
         "failed": "failed"
     }
     status = status_map.get(task.status, "processing")
@@ -142,7 +142,7 @@ async def get_video(
         "created_at": created_at,
         "status": status,
         "progress": int(task.progress or 0),
-        "url": url,
+        "video_url": url,
         "error": None
     }
     if status == "failed":
