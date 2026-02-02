@@ -224,6 +224,34 @@ class Database:
                 VALUES (1, ?, ?)
             """, (pow_proxy_enabled, pow_proxy_url))
 
+        # Ensure pow_service_config has a row
+        cursor = await db.execute("SELECT COUNT(*) FROM pow_service_config")
+        count = await cursor.fetchone()
+        if count[0] == 0:
+            # Get POW service config from config_dict if provided, otherwise use defaults
+            mode = "local"
+            server_url = None
+            api_key = None
+            proxy_enabled = False
+            proxy_url = None
+
+            if config_dict:
+                pow_service_config = config_dict.get("pow_service", {})
+                mode = pow_service_config.get("mode", "local")
+                server_url = pow_service_config.get("server_url", "")
+                api_key = pow_service_config.get("api_key", "")
+                proxy_enabled = pow_service_config.get("proxy_enabled", False)
+                proxy_url = pow_service_config.get("proxy_url", "")
+                # Convert empty strings to None
+                server_url = server_url if server_url else None
+                api_key = api_key if api_key else None
+                proxy_url = proxy_url if proxy_url else None
+
+            await db.execute("""
+                INSERT INTO pow_service_config (id, mode, server_url, api_key, proxy_enabled, proxy_url)
+                VALUES (1, ?, ?, ?, ?, ?)
+            """, (mode, server_url, api_key, proxy_enabled, proxy_url))
+
 
     async def check_and_migrate_db(self, config_dict: dict = None):
         """Check database integrity and perform migrations if needed
@@ -512,6 +540,20 @@ class Database:
                     id INTEGER PRIMARY KEY DEFAULT 1,
                     pow_proxy_enabled BOOLEAN DEFAULT 0,
                     pow_proxy_url TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+
+            # Create pow_service_config table
+            await db.execute("""
+                CREATE TABLE IF NOT EXISTS pow_service_config (
+                    id INTEGER PRIMARY KEY DEFAULT 1,
+                    mode TEXT DEFAULT 'local',
+                    server_url TEXT,
+                    api_key TEXT,
+                    proxy_enabled BOOLEAN DEFAULT 0,
+                    proxy_url TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
@@ -1276,6 +1318,23 @@ class Database:
                 return PowProxyConfig(**dict(row))
             return PowProxyConfig(pow_proxy_enabled=False, pow_proxy_url=None)
 
+    async def get_pow_service_config(self) -> "PowServiceConfig":
+        """Get POW service configuration"""
+        from .models import PowServiceConfig
+        async with aiosqlite.connect(self.db_path) as db:
+            db.row_factory = aiosqlite.Row
+            cursor = await db.execute("SELECT * FROM pow_service_config WHERE id = 1")
+            row = await cursor.fetchone()
+            if row:
+                return PowServiceConfig(**dict(row))
+            return PowServiceConfig(
+                mode="local",
+                server_url=None,
+                api_key=None,
+                proxy_enabled=False,
+                proxy_url=None
+            )
+
     async def update_pow_proxy_config(self, pow_proxy_enabled: bool, pow_proxy_url: Optional[str] = None):
         """Update POW proxy configuration"""
         async with aiosqlite.connect(self.db_path) as db:
@@ -1285,4 +1344,22 @@ class Database:
                 VALUES (1, ?, ?, CURRENT_TIMESTAMP)
             """, (pow_proxy_enabled, pow_proxy_url))
             await db.commit()
+
+    async def update_pow_service_config(
+        self,
+        mode: str,
+        server_url: Optional[str] = None,
+        api_key: Optional[str] = None,
+        proxy_enabled: Optional[bool] = None,
+        proxy_url: Optional[str] = None
+    ):
+        """Update POW service configuration"""
+        async with aiosqlite.connect(self.db_path) as db:
+            # Use INSERT OR REPLACE to ensure the row exists
+            await db.execute("""
+                INSERT OR REPLACE INTO pow_service_config (id, mode, server_url, api_key, proxy_enabled, proxy_url, updated_at)
+                VALUES (1, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+            """, (mode, server_url, api_key, proxy_enabled, proxy_url))
+            await db.commit()
+
 

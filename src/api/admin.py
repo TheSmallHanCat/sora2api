@@ -171,6 +171,13 @@ class UpdatePowProxyConfigRequest(BaseModel):
     pow_proxy_enabled: bool
     pow_proxy_url: Optional[str] = None
 
+class UpdatePowServiceConfigRequest(BaseModel):
+    mode: str  # "local" or "external"
+    server_url: Optional[str] = None
+    api_key: Optional[str] = None
+    proxy_enabled: Optional[bool] = None
+    proxy_url: Optional[str] = None
+
 class BatchDisableRequest(BaseModel):
     token_ids: List[int]
 
@@ -1373,16 +1380,17 @@ async def update_call_logic_config(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to update call logic configuration: {str(e)}")
 
-# POW proxy config endpoints
+# POW proxy config endpoints (redirected to pow_service config for unified management)
 @router.get("/api/pow-proxy/config")
 async def get_pow_proxy_config(token: str = Depends(verify_admin_token)) -> dict:
-    """Get POW proxy configuration"""
-    config_obj = await db.get_pow_proxy_config()
+    """Get POW proxy configuration (unified with pow_service config)"""
+    # Read from pow_service config for unified management
+    config_obj = await db.get_pow_service_config()
     return {
         "success": True,
         "config": {
-            "pow_proxy_enabled": config_obj.pow_proxy_enabled,
-            "pow_proxy_url": config_obj.pow_proxy_url or ""
+            "pow_proxy_enabled": config_obj.proxy_enabled,
+            "pow_proxy_url": config_obj.proxy_url or ""
         }
     }
 
@@ -1391,17 +1399,70 @@ async def update_pow_proxy_config(
     request: UpdatePowProxyConfigRequest,
     token: str = Depends(verify_admin_token)
 ):
-    """Update POW proxy configuration"""
+    """Update POW proxy configuration (unified with pow_service config)"""
     try:
-        await db.update_pow_proxy_config(request.pow_proxy_enabled, request.pow_proxy_url)
-        config.set_pow_proxy_enabled(request.pow_proxy_enabled)
-        config.set_pow_proxy_url(request.pow_proxy_url or "")
+        # Update pow_service config instead for unified management
+        config_obj = await db.get_pow_service_config()
+        await db.update_pow_service_config(
+            mode=config_obj.mode,
+            server_url=config_obj.server_url,
+            api_key=config_obj.api_key,
+            proxy_enabled=request.pow_proxy_enabled,
+            proxy_url=request.pow_proxy_url
+        )
+        # Update in-memory config
+        config.set_pow_service_proxy_enabled(request.pow_proxy_enabled)
+        config.set_pow_service_proxy_url(request.pow_proxy_url or "")
         return {
             "success": True,
             "message": "POW proxy configuration updated"
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to update POW proxy configuration: {str(e)}")
+
+# POW service config endpoints
+@router.get("/api/pow/config")
+async def get_pow_service_config(token: str = Depends(verify_admin_token)) -> dict:
+    """Get POW service configuration"""
+    config_obj = await db.get_pow_service_config()
+    return {
+        "success": True,
+        "config": {
+            "mode": config_obj.mode,
+            "server_url": config_obj.server_url or "",
+            "api_key": config_obj.api_key or "",
+            "proxy_enabled": config_obj.proxy_enabled,
+            "proxy_url": config_obj.proxy_url or ""
+        }
+    }
+
+@router.post("/api/pow/config")
+async def update_pow_service_config(
+    request: UpdatePowServiceConfigRequest,
+    token: str = Depends(verify_admin_token)
+):
+    """Update POW service configuration"""
+    try:
+        await db.update_pow_service_config(
+            mode=request.mode,
+            server_url=request.server_url,
+            api_key=request.api_key,
+            proxy_enabled=request.proxy_enabled,
+            proxy_url=request.proxy_url
+        )
+        # Update runtime config
+        config.set_pow_service_mode(request.mode)
+        config.set_pow_service_server_url(request.server_url or "")
+        config.set_pow_service_api_key(request.api_key or "")
+        config.set_pow_service_proxy_enabled(request.proxy_enabled or False)
+        config.set_pow_service_proxy_url(request.proxy_url or "")
+
+        return {
+            "success": True,
+            "message": "POW service configuration updated"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to update POW service configuration: {str(e)}")
 
 # Task management endpoints
 @router.post("/api/tasks/{task_id}/cancel")

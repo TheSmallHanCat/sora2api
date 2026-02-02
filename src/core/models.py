@@ -154,6 +154,17 @@ class PowProxyConfig(BaseModel):
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
+class PowServiceConfig(BaseModel):
+    """POW service configuration"""
+    id: int = 1
+    mode: str = "local"  # "local" or "external"
+    server_url: Optional[str] = None  # External POW service URL
+    api_key: Optional[str] = None  # External POW service API key
+    proxy_enabled: bool = False  # Whether to enable proxy for POW service
+    proxy_url: Optional[str] = None  # Proxy URL for POW service
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+
 # API Request/Response models
 class ChatMessage(BaseModel):
     role: str

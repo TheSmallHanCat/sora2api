@@ -238,25 +238,96 @@ class Config:
 
     @property
     def pow_proxy_enabled(self) -> bool:
-        """Get POW proxy enabled status"""
+        """Get POW proxy enabled status
+
+        DEPRECATED: This configuration is deprecated. Use pow_service_proxy_enabled instead.
+        All POW proxy settings are now unified under [pow_service] section.
+        """
         return self._config.get("pow_proxy", {}).get("pow_proxy_enabled", False)
 
     def set_pow_proxy_enabled(self, enabled: bool):
-        """Set POW proxy enabled/disabled"""
+        """Set POW proxy enabled/disabled
+
+        DEPRECATED: This configuration is deprecated. Use set_pow_service_proxy_enabled instead.
+        All POW proxy settings are now unified under [pow_service] section.
+        """
         if "pow_proxy" not in self._config:
             self._config["pow_proxy"] = {}
         self._config["pow_proxy"]["pow_proxy_enabled"] = enabled
 
     @property
     def pow_proxy_url(self) -> str:
-        """Get POW proxy URL"""
+        """Get POW proxy URL
+
+        DEPRECATED: This configuration is deprecated. Use pow_service_proxy_url instead.
+        All POW proxy settings are now unified under [pow_service] section.
+        """
         return self._config.get("pow_proxy", {}).get("pow_proxy_url", "")
 
     def set_pow_proxy_url(self, url: str):
-        """Set POW proxy URL"""
+        """Set POW proxy URL
+
+        DEPRECATED: This configuration is deprecated. Use set_pow_service_proxy_url instead.
+        All POW proxy settings are now unified under [pow_service] section.
+        """
         if "pow_proxy" not in self._config:
             self._config["pow_proxy"] = {}
         self._config["pow_proxy"]["pow_proxy_url"] = url
+
+    @property
+    def pow_service_mode(self) -> str:
+        """Get POW service mode (local or external)"""
+        return self._config.get("pow_service", {}).get("mode", "local")
+
+    def set_pow_service_mode(self, mode: str):
+        """Set POW service mode"""
+        if "pow_service" not in self._config:
+            self._config["pow_service"] = {}
+        self._config["pow_service"]["mode"] = mode
+
+    @property
+    def pow_service_server_url(self) -> str:
+        """Get POW service server URL"""
+        return self._config.get("pow_service", {}).get("server_url", "")
+
+    def set_pow_service_server_url(self, url: str):
+        """Set POW service server URL"""
+        if "pow_service" not in self._config:
+            self._config["pow_service"] = {}
+        self._config["pow_service"]["server_url"] = url
+
+    @property
+    def pow_service_api_key(self) -> str:
+        """Get POW service API key"""
+        return self._config.get("pow_service", {}).get("api_key", "")
+
+    def set_pow_service_api_key(self, api_key: str):
+        """Set POW service API key"""
+        if "pow_service" not in self._config:
+            self._config["pow_service"] = {}
+        self._config["pow_service"]["api_key"] = api_key
+
+    @property
+    def pow_service_proxy_enabled(self) -> bool:
+        """Get POW service proxy enabled status"""
+        return self._config.get("pow_service", {}).get("proxy_enabled", False)
+
+    def set_pow_service_proxy_enabled(self, enabled: bool):
+        """Set POW service proxy enabled status"""
+        if "pow_service" not in self._config:
+            self._config["pow_service"] = {}
+        self._config["pow_service"]["proxy_enabled"] = enabled
+
+    @property
+    def pow_service_proxy_url(self) -> str:
+        """Get POW service proxy URL"""
+        return self._config.get("pow_service", {}).get("proxy_url", "")
+
+    def set_pow_service_proxy_url(self, url: str):
+        """Set POW service proxy URL"""
+        if "pow_service" not in self._config:
+            self._config["pow_service"] = {}
+        self._config["pow_service"]["proxy_url"] = url
 
 # Global config instance
 config = Config()

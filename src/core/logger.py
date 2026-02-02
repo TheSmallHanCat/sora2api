@@ -270,6 +270,18 @@ class DebugLogger:
         except Exception as e:
             self.logger.error(f"Error logging info: {e}")
 
+    def log_warning(self, message: str):
+        """Log warning message to log.txt"""
+
+        # Check if debug mode is enabled
+        if not config.debug_enabled:
+            return
+
+        try:
+            self.logger.warning(f"⚠️  [{self._format_timestamp()}] {message}")
+        except Exception as e:
+            self.logger.error(f"Error logging warning: {e}")
+
 # Global debug logger instance
 debug_logger = DebugLogger()
 
